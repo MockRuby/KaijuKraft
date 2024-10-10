@@ -23,7 +23,7 @@ public class KaijuStats : MonoBehaviour
     public StagesOfLife stageOfLife; // Current stage of life for the Kaiju
     public float growth; // Growth progress of the Kaiju
 
-    float prevSystemTime = 0; // Previous system time for growth calculation
+    public float prevSystemTime = 0; // Previous system time for growth calculation
 
     // Food stats for the Kaiju
     public int generalFood = 0; // General food collected
@@ -54,10 +54,22 @@ public class KaijuStats : MonoBehaviour
         if (stageOfLife == StagesOfLife.Egg)
         {
             EggGrowing();
+            egg.SetActive(true);
+            juv.SetActive(false);
+            adult.SetActive(false);
         }
         else if (stageOfLife == StagesOfLife.Juvenile)
         {
             JuvenileGrowing();
+            egg.SetActive(false);
+            juv.SetActive(true);
+            adult.SetActive(false);
+        }
+        else
+        {
+            egg.SetActive(false);
+            juv.SetActive(false);
+            adult.SetActive(true);
         }
 
         // Check for key inputs to feed the Kaiju with different types of food
@@ -119,10 +131,6 @@ public class KaijuStats : MonoBehaviour
             foodHealth = 0;
             foodDefence = 0;
             foodSpeed = 0;
-            
-            // Activate the Juvenile stage GameObject
-            egg.SetActive(false);
-            juv.SetActive(true);
         }
 
         prevSystemTime = currentSystemTime;
@@ -160,9 +168,6 @@ public class KaijuStats : MonoBehaviour
             foodDefence = 0;
             foodSpeed = 0;
             
-            // Activate the Adult stage GameObject
-            juv.SetActive(false);
-            adult.SetActive(true);
         }
 
         prevSystemTime = currentSystemTime;
