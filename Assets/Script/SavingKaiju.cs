@@ -1,13 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class SavingKaiju : MonoBehaviour
 {
-    public KaijuData kaijuData = new KaijuData();
+    public KaijuListData listData = new KaijuListData();
 
-    // Update is called once per frame
+    // Update is called once per411 frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.S))
@@ -20,29 +18,30 @@ public class SavingKaiju : MonoBehaviour
         }
     }
 
-    public void SaveKaiju()
+    void SaveKaiju()
     {
-        kaijuData.SetData();
-        string jsonString = JsonUtility.ToJson(kaijuData);
+        listData.SavingAllKaijuData();
         string filepath = Application.persistentDataPath + "/KaijuData.json";
         Debug.Log(filepath);
+        string jsonString = JsonUtility.ToJson(listData, true);
         System.IO.File.WriteAllText(filepath, jsonString);
         Debug.Log("KaijuSaved");
     }
 
-    public void LoadKaiju()
+    void LoadKaiju()
     {
         string filepath = Application.persistentDataPath + "/KaijuData.json";
         string jsonString = System.IO.File.ReadAllText(filepath);
-        kaijuData = JsonUtility.FromJson<KaijuData>(jsonString);
-        kaijuData.LoadData();
+        listData = JsonUtility.FromJson<KaijuListData>(jsonString);
+        listData.LoadingAllKaijuData();
         Debug.Log("KaijuLoaded");
     }
 }
+
 [System.Serializable]
 public class KaijuData
 {
-    public List<GameObject> kaijuList = new List<GameObject>();
+    public GameObject kaiju;
     public KaijuStats stats;
     public int localHealth; // Health points of the Kaiju
     public int localAttack; // Attack points of the Kaiju
@@ -50,16 +49,17 @@ public class KaijuData
     public int localSpeed; // Speed of the Kaiju
     public float localGrowth; // Growth progress of the Kaiju
 
-    public float localPrevSystemTime = 0; // Previous system time for growth calculation
+    public float localPrevSystemTime; // Previous system time for growth calculation
 
     // Food stats for the Kaiju
-    public int localGeneralFood = 0; // General food collected
-    public int localFoodAttack = 0; // Food for increasing attack
-    public int localFoodDefence = 0; // Food for increasing defence
-    public int localFoodHealth = 0; // Food for increasing health
-    public int localFoodSpeed = 0; // Food for increasing speed
+    public int localGeneralFood; // General food collected
+    public int localFoodAttack ; // Food for increasing attack
+    public int localFoodDefence; // Food for increasing defence
+    public int localFoodHealth; // Food for increasing health
+    public int localFoodSpeed; // Food for increasing speed
     public KaijuStats.StagesOfLife stageOfLifeForSave;
-    
+
+
     public void SetData()
     {
         localHealth = stats.health;
@@ -74,7 +74,6 @@ public class KaijuData
         localFoodHealth = stats.foodHealth;
         localFoodSpeed = stats.foodSpeed;
         stageOfLifeForSave = stats.stageOfLife;
-        
     }
 
     public void LoadData()
@@ -91,5 +90,31 @@ public class KaijuData
         stats.foodHealth = localFoodHealth;
         stats.foodSpeed = localFoodSpeed;
         stats.stageOfLife = stageOfLifeForSave;
+    }
+}
+
+[System.Serializable]
+public class KaijuListData
+{
+    public List<KaijuData> kaijuListData = new List<KaijuData>();
+
+    public void SavingAllKaijuData()
+    {
+        foreach (GameObject kaiju in GameObject.FindGameObjectsWithTag("Kaiju"))
+        {
+            KaijuData kaijuData = new KaijuData();
+            kaijuData.kaiju = kaiju;
+            kaijuData.stats = kaiju.GetComponent<KaijuStats>();
+            kaijuData.SetData();
+            kaijuListData.Add(kaijuData);
+        }
+    }
+
+    public void LoadingAllKaijuData()
+    {
+        foreach (KaijuData kaijuData in kaijuListData)
+        {
+            kaijuData.LoadData();
+        }
     }
 }
