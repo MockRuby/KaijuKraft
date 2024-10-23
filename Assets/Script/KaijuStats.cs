@@ -36,16 +36,7 @@ public class KaijuStats : MonoBehaviour
     public GameObject juv; // GameObject representing the juvenile stage
     public GameObject adult; // GameObject representing the adult stage
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        // Initialize Kaiju stats at the Egg stage
-        stageOfLife = StagesOfLife.Egg;
-        health = 10;
-        attack = 10;
-        defence = 10;
-        speed = 10;
-    }
+
 
     // Update is called once per frame
     void Update()
@@ -53,6 +44,10 @@ public class KaijuStats : MonoBehaviour
         // Check the current stage of life for the Kaiju and update accordingly
         if (stageOfLife == StagesOfLife.Egg)
         {
+            health = 10;
+            attack = 10;
+            defence = 10;
+            speed = 10;
             EggGrowing();
             egg.SetActive(true);
             juv.SetActive(false);
@@ -121,7 +116,7 @@ public class KaijuStats : MonoBehaviour
             growth = 0;
             // Increase stats based on collected food
             health += 10 + generalFood + foodHealth * 5;
-            attack += 10 + generalFood + foodHealth * 5 ;
+            attack += 10 + generalFood + foodAttack * 5 ;
             defence += 10 + generalFood + foodDefence * 5;
             speed += 10 + generalFood + foodSpeed * 5;
 
@@ -157,7 +152,7 @@ public class KaijuStats : MonoBehaviour
             growth = 0;
             // Increase stats based on collected food
             health += 10 + generalFood + foodHealth * 5;
-            attack += 10 + generalFood + foodHealth * 5 ;
+            attack += 10 + generalFood + foodAttack * 5 ;
             defence += 10 + generalFood + foodDefence * 5;
             speed += 10 + generalFood + foodSpeed * 5;
 

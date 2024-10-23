@@ -1,10 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SavingKaiju : MonoBehaviour
 {
     public KaijuListData listData = new KaijuListData();
-
     // Update is called once per411 frame
     void Update()
     {
@@ -15,6 +16,10 @@ public class SavingKaiju : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.L))
         {
             LoadKaiju();
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+          BattleLoad();
         }
     }
 
@@ -35,6 +40,29 @@ public class SavingKaiju : MonoBehaviour
         listData = JsonUtility.FromJson<KaijuListData>(jsonString);
         listData.LoadingAllKaijuData();
         Debug.Log("KaijuLoaded");
+    }
+
+    public void BattleLoad()
+    {
+        foreach (KaijuData kaijuData in listData.kaijuListData)
+        {
+            GameObject newKaiju = GameObject.FindGameObjectWithTag("Kaiju");
+            KaijuStats newKaijuStats = newKaiju.GetComponent<KaijuStats>();
+
+            // Apply saved data to the new Kaiju
+            newKaijuStats.health = kaijuData.localHealth;
+            newKaijuStats.attack = kaijuData.localAttack;
+            newKaijuStats.defence = kaijuData.localDefence;
+            newKaijuStats.speed = kaijuData.localSpeed;
+            newKaijuStats.growth = kaijuData.localGrowth;
+            newKaijuStats.prevSystemTime = kaijuData.localPrevSystemTime;
+            newKaijuStats.generalFood = kaijuData.localGeneralFood;
+            newKaijuStats.foodAttack = kaijuData.localFoodAttack;
+            newKaijuStats.foodDefence = kaijuData.localFoodDefence;
+            newKaijuStats.foodHealth = kaijuData.localFoodHealth;
+            newKaijuStats.foodSpeed = kaijuData.localFoodSpeed;
+            newKaijuStats.stageOfLife = kaijuData.stageOfLifeForSave;
+        }
     }
 }
 
