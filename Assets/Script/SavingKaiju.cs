@@ -18,7 +18,7 @@ public class SavingKaiju : MonoBehaviour
         }
     }
 
-    void SaveKaiju()
+    public void SaveKaiju()
     {
         listData.SavingAllKaijuData();
         string filepath = Application.persistentDataPath + "/KaijuData.json";
@@ -28,7 +28,7 @@ public class SavingKaiju : MonoBehaviour
         Debug.Log("KaijuSaved");
     }
 
-    void LoadKaiju()
+    public void LoadKaiju()
     {
         string filepath = Application.persistentDataPath + "/KaijuData.json";
         string jsonString = System.IO.File.ReadAllText(filepath);
