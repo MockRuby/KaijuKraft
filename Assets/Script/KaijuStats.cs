@@ -12,6 +12,11 @@ public class KaijuStats : MonoBehaviour
     public int defence; // Defence points of the Kaiju
     public int speed; // Speed of the Kaiju
 
+    public Animator eggAnimator;
+
+    string boolHatchStart = "finalStage";
+    string boolHatchEnd = "hatchStage";
+
     // Enum to represent different stages of life for the Kaiju
     public enum StagesOfLife
     {
@@ -36,7 +41,9 @@ public class KaijuStats : MonoBehaviour
     public GameObject juv; // GameObject representing the juvenile stage
     public GameObject adult; // GameObject representing the adult stage
 
+    public KaijuGeneration kaiGen;
 
+    bool triggerMature = false;
 
     // Update is called once per frame
     void Update()
@@ -56,15 +63,19 @@ public class KaijuStats : MonoBehaviour
         else if (stageOfLife == StagesOfLife.Juvenile)
         {
             JuvenileGrowing();
-            egg.SetActive(false);
+            //egg.SetActive(false);
             juv.SetActive(true);
             adult.SetActive(false);
         }
         else
         {
-            egg.SetActive(false);
+            //egg.SetActive(false);
             juv.SetActive(false);
             adult.SetActive(true);
+            if (triggerMature)
+            {
+                kaiGen.MaturizeKaiju();
+            }
         }
 
         // Check for key inputs to feed the Kaiju with different types of food
@@ -109,9 +120,14 @@ public class KaijuStats : MonoBehaviour
         }
         growth = Mathf.Clamp(growth, 0, 100);
 
+        if (growth >= 85)
+        {
+            eggAnimator.SetBool(boolHatchStart, true);
+        }
         // Check if the Kaiju has reached the Juvenile stage
         if (growth >= 100)
         {
+            eggAnimator.SetBool(boolHatchEnd, true);
             stageOfLife = StagesOfLife.Juvenile;
             growth = 0;
             // Increase stats based on collected food
@@ -149,6 +165,7 @@ public class KaijuStats : MonoBehaviour
         if (growth >= 100)
         {
             stageOfLife = StagesOfLife.Adult;
+            triggerMature = true;
             growth = 0;
             // Increase stats based on collected food
             health += 10 + generalFood + foodHealth * 5;
