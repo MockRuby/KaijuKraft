@@ -13,14 +13,11 @@ public class KaijuGeneration : MonoBehaviour
 
     //Color indicates rarity
     public SpriteRenderer[] eggColorShell = new SpriteRenderer[8];
-
-    public int kaijuTypeID = 0; //replace once hatchery script is complete; 0 - mammal, 1 - avian, 2 - aquatic, 3 - reptilian
     public int kaijuRarityID = 0; //replace once hatchery script is complete 0 - common, 1 - uncommon, 2 - rare, 3 - legendary
     public int kaijuRarityPick = 0; //replace once hatchery script is complete
-
-    public int kaiju01GeneID = 0;
     
 
+    //store game objects to turn active/inactive
     public GameObject kaijuJuvieCatGenesTabby;
     public GameObject[] kaijuJuvieCatGenesBicolor = new GameObject[2];
     public GameObject kaijuJuvieCatGenesTicked;
@@ -31,17 +28,12 @@ public class KaijuGeneration : MonoBehaviour
     public GameObject kaijuJuvieCatGenesVan;
 
     public SpriteRenderer[] baseColor = new SpriteRenderer[26];
-    public string baseColorHex;
     public SpriteRenderer[] secondaryColor = new SpriteRenderer[83];
-    public string secondaryColorHex;
     public SpriteRenderer[] tertiaryColor = new SpriteRenderer[15];
-    public string tertiaryColorHex;
     public SpriteRenderer eyeColorA;
     public SpriteRenderer adultEyeColorA;
-    public string eyeColorLeftHex;
     public SpriteRenderer eyeColorB;
     public SpriteRenderer adultEyeColorB;
-    public string eyeColorRightHex;
 
     bool heterochromaticChance = false;
 
@@ -53,6 +45,20 @@ public class KaijuGeneration : MonoBehaviour
     public GameObject[] kaijuAdultCatGenesCalico = new GameObject[16];
     public GameObject[] kaijuAdultCatGenesPointed = new GameObject[13];
     public GameObject[] kaijuAdultCatGenesVan = new GameObject[5];
+
+
+    //data to store
+    /// <summary>
+    /// Add if raised traits features are to be added
+    /// *insert variables here*
+    /// </summary>
+    public int kaijuTypeID; //replace once hatchery script is complete; 0 - mammal, 1 - avian, 2 - aquatic, 3 - reptilian
+    public int kaijuGeneID;
+    public string baseColorHex;
+    public string secondaryColorHex;
+    public string tertiaryColorHex;
+    public string eyeColorLeftHex;
+    public string eyeColorRightHex;
 
     /// <summary>
     /// Will add more variables for kaiju traits
@@ -67,12 +73,11 @@ public class KaijuGeneration : MonoBehaviour
 
         switch (kaijuTypeID)
         {
-            case 0:
+            case 0: //cream
                 foreach(SpriteRenderer srColor in eggColorBase)
                 {
-                    string colorHex = "#FFF6DA";
+                    string colorHex = "#FFF7A8";
                     Color newColor;
-
                     if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
                     {
                         srColor.color = newColor;
@@ -83,22 +88,49 @@ public class KaijuGeneration : MonoBehaviour
                     }
                 }
                 break;
-            case 1:
+            case 1: //yellow
                 foreach (SpriteRenderer srColor in eggColorBase)
                 {
-                    srColor.color = Color.yellow;
+                    string colorHex = "#FFFE6C";
+                    Color newColor;
+                    if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
+                    {
+                        srColor.color = newColor;
+                    }
+                    else
+                    {
+                        Debug.LogError("Invalid hexcode");
+                    }
                 }
                 break;
-            case 2:
+            case 2: //cyan
                 foreach (SpriteRenderer srColor in eggColorBase)
                 {
-                    srColor.color = Color.cyan;
+                    string colorHex = "#56FFF7";
+                    Color newColor;
+                    if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
+                    {
+                        srColor.color = newColor;
+                    }
+                    else
+                    {
+                        Debug.LogError("Invalid hexcode");
+                    }
                 }
                 break;
-            case 3:
+            case 3: //green
                 foreach (SpriteRenderer srColor in eggColorBase)
                 {
-                    srColor.color = Color.green;
+                    string colorHex = "#00FF34";
+                    Color newColor;
+                    if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
+                    {
+                        srColor.color = newColor;
+                    }
+                    else
+                    {
+                        Debug.LogError("Invalid hexcode");
+                    }
                 }
                 break;
             default:
@@ -185,16 +217,16 @@ public class KaijuGeneration : MonoBehaviour
         switch (kaijuRarityID) //for first kaiju type
         {
             case 0:
-                kaiju01GeneID = Random.Range(0, 3);
+                kaijuGeneID = Random.Range(0, 3);
                 break;
             case 1:
-                kaiju01GeneID = Random.Range(3, 5);
+                kaijuGeneID = Random.Range(3, 5);
                 break;
             case 2:
-                kaiju01GeneID = Random.Range(5, 7);
+                kaijuGeneID = Random.Range(5, 7);
                 break;
             case 3:
-                kaiju01GeneID = Random.Range(7, 9);
+                kaijuGeneID = Random.Range(7, 9);
                 break;
             default:
                 break;
@@ -208,7 +240,7 @@ public class KaijuGeneration : MonoBehaviour
     public void KaijuGenePick()
     {
         KaijuBaseColorPick();
-        switch (kaiju01GeneID) //default gene is 0; if 0, no additional code necessary
+        switch (kaijuGeneID) //default gene is 0; if 0, no additional code necessary
         {
             case 1:
                 kaijuJuvieCatGenesTabby.SetActive(true);
@@ -1210,7 +1242,7 @@ public class KaijuGeneration : MonoBehaviour
 
     public void MaturizeKaiju()
     {
-        switch (kaiju01GeneID) //default gene is 0; if 0, no additional code necessary
+        switch (kaijuGeneID) //default gene is 0; if 0, no additional code necessary
         {
             case 1:
                 foreach (GameObject geneObject in kaijuAdultCatGenesTabby)
