@@ -9,6 +9,6 @@ public class EggUpdate : MonoBehaviour
     public void DestroyOnHatch()
     {
         kaiGen.KaijuGenePick();
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }

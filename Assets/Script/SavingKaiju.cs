@@ -6,6 +6,7 @@ using UnityEngine;
 public class SavingKaiju : MonoBehaviour
 {
     public KaijuListData listData = new KaijuListData();
+    public KaijuTrait traits = new KaijuTrait();
     // Update is called once per411 frame
     void Update()
     {
@@ -19,7 +20,15 @@ public class SavingKaiju : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
-          BattleLoad();
+            BattleLoad();
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            SaveKaijuTrait();
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            LoadKaijuTrait();
         }
     }
 
@@ -39,6 +48,24 @@ public class SavingKaiju : MonoBehaviour
         string jsonString = System.IO.File.ReadAllText(filepath);
         listData = JsonUtility.FromJson<KaijuListData>(jsonString);
         listData.LoadingAllKaijuData();
+        Debug.Log("KaijuLoaded");
+    }
+
+    public void SaveKaijuTrait()
+    {
+        traits.SaveTraits();
+        string filepath = Application.persistentDataPath + "/KaijuTraitData.json";
+        Debug.Log(filepath);
+        string jsonString = JsonUtility.ToJson(traits, true);
+        System.IO.File.WriteAllText(filepath, jsonString);
+        Debug.Log("KaijuSavedTraits");
+    }
+    public void LoadKaijuTrait()
+    {
+        string filepath = Application.persistentDataPath + "/KaijuTraitData.json";
+        string jsonString = System.IO.File.ReadAllText(filepath);
+        traits = JsonUtility.FromJson<KaijuTrait>(jsonString);
+        traits.LoadTraits();
         Debug.Log("KaijuLoaded");
     }
 
@@ -144,5 +171,35 @@ public class KaijuListData
         {
             kaijuData.LoadData();
         }
+    }
+}
+[System.Serializable]
+public class KaijuTrait
+{
+    public GameObject kaiju;
+    public KaijuGeneration generation;
+    public string baseColorHexSave;
+    public string secondaryColorHexSave;
+    public string tertiaryColorHexSave;
+    public string eyeColorLeftHexSave;
+    public string eyeColorRightHexSave;
+
+    public void SaveTraits()
+    {
+        baseColorHexSave = generation.baseColorHex;
+        secondaryColorHexSave = generation.secondaryColorHex;
+        tertiaryColorHexSave = generation.tertiaryColorHex;
+        eyeColorLeftHexSave = generation.eyeColorLeftHex;
+        eyeColorRightHexSave = generation.eyeColorRightHex;
+    }
+
+    public void LoadTraits()
+    {
+        generation.baseColorHex = baseColorHexSave;
+        generation.secondaryColorHex = secondaryColorHexSave;
+        generation.tertiaryColorHex = tertiaryColorHexSave;
+        generation.eyeColorLeftHex = eyeColorLeftHexSave;
+        generation.eyeColorRightHex = eyeColorRightHexSave;
+        generation.UpdateColour();
     }
 }

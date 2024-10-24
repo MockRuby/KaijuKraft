@@ -43,6 +43,8 @@ public class KaijuStats : MonoBehaviour
 
     public KaijuGeneration kaiGen;
 
+    bool triggerMature = false;
+
     // Update is called once per frame
     void Update()
     {
@@ -70,6 +72,10 @@ public class KaijuStats : MonoBehaviour
             //egg.SetActive(false);
             juv.SetActive(false);
             adult.SetActive(true);
+            if (triggerMature)
+            {
+                kaiGen.MaturizeKaiju();
+            }
         }
 
         // Check for key inputs to feed the Kaiju with different types of food
@@ -159,6 +165,7 @@ public class KaijuStats : MonoBehaviour
         if (growth >= 100)
         {
             stageOfLife = StagesOfLife.Adult;
+            triggerMature = true;
             growth = 0;
             // Increase stats based on collected food
             health += 10 + generalFood + foodHealth * 5;
