@@ -52,13 +52,15 @@ public class KaijuGeneration : MonoBehaviour
     /// Add if raised traits features are to be added
     /// *insert variables here*
     /// </summary>
-    public int kaijuTypeID; //replace once hatchery script is complete; 0 - mammal, 1 - avian, 2 - aquatic, 3 - reptilian
+    public int kaijuTypeID; //replace once brood mother script is complete; 0 - mammal, 1 - avian, 2 - aquatic, 3 - reptilian
     public int kaijuGeneID;
     public string baseColorHex;
     public string secondaryColorHex;
     public string tertiaryColorHex;
     public string eyeColorLeftHex;
     public string eyeColorRightHex;
+    public string eggTypeColorHex;
+    public string eggRarityColorHex;
 
     /// <summary>
     /// Will add more variables for kaiju traits
@@ -68,8 +70,8 @@ public class KaijuGeneration : MonoBehaviour
     {
         //create reference to hatchery script for IDs
         //kaijuTypeID = Random.Range(0,4); 
-        kaijuTypeID = 0; //only 1 kaiju type available right now; remove/replace after hatchery script is complete
-        kaijuRarityPick = Random.Range(0,21); //remove/replace after hatchery script is complete
+        kaijuTypeID = 0; //only 1 kaiju type available right now; remove/replace after brood mother script is complete
+        kaijuRarityPick = Random.Range(0,21); //remove/replace after brood mother script is complete
 
         switch (kaijuTypeID)
         {
@@ -140,78 +142,26 @@ public class KaijuGeneration : MonoBehaviour
 
         if (kaijuRarityPick >= 0 && kaijuRarityPick <= 8)
         {
-            foreach (SpriteRenderer srColor in eggColorShell)
-            {
-                kaijuRarityID = 0;
-                string colorHex = "#805146";
-                Color newColor;
-                
-                if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
-                {
-                    srColor.color = newColor;
-                }
-                else
-                {
-                    Debug.LogError("Invalid hexcode");
-                }
-            }
+            //common
+            kaijuRarityID = 0;
         }
 
         else if (kaijuRarityPick >= 9 && kaijuRarityPick <= 14)
         {
-            foreach (SpriteRenderer srColor in eggColorShell)
-            {
-                kaijuRarityID = 1;
-                string colorHex = "#5D7BFF";
-                Color newColor;
-
-                if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
-                {
-                    srColor.color = newColor;
-                }
-                else
-                {
-                    Debug.LogError("Invalid hexcode");
-                }
-            }
+            //uncommon
+            kaijuRarityID = 1;
         }
 
         else if (kaijuRarityPick >= 15 && kaijuRarityPick <= 18)
         {
-            foreach (SpriteRenderer srColor in eggColorShell)
-            {
-                kaijuRarityID = 2;
-                string colorHex = "#98BA71";
-                Color newColor;
-
-                if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
-                {
-                    srColor.color = newColor;
-                }
-                else
-                {
-                    Debug.LogError("Invalid hexcode");
-                }
-            }
+            //rare
+            kaijuRarityID = 2;
         }
 
         else if (kaijuRarityPick >= 19 && kaijuRarityPick <= 20)
         {
-            foreach (SpriteRenderer srColor in eggColorShell)
-            {
-                kaijuRarityID = 3;
-                string colorHex = "#C540FF";
-                Color newColor;
-
-                if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
-                {
-                    srColor.color = newColor;
-                }
-                else
-                {
-                    Debug.LogError("Invalid hexcode");
-                }
-            }
+            //legendary
+            kaijuRarityID = 3;
         }
 
         switch (kaijuRarityID) //for first kaiju type
@@ -239,6 +189,9 @@ public class KaijuGeneration : MonoBehaviour
 
     public void KaijuGenePick()
     {
+
+
+
         KaijuBaseColorPick();
         switch (kaijuGeneID) //default gene is 0; if 0, no additional code necessary
         {
