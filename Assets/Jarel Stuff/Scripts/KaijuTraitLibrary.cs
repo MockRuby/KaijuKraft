@@ -2,29 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KaijuTraitLibrary
+public static class KaijuTraitLibrary
 {
-    //brood mother slider limits for type chance
-    public int mammalUpperLimit = 50;
-    public int avianUpperLimit = 50;
-    public int aquaticUpperLimit = 50;
-    public int reptilianUpperLimit = 50;
+    public static Dictionary<string, float> kaijuWeight = new Dictionary<string, float>
+    {
+        {"Mammal", 25.0f},
+        {"Avian", 25.0f},
+        {"Aquatic", 25.0f},
+        {"Reptile", 25.0f}
+    };
 
-    //brood mother slider limits for rarity chance
-    public int commonUpperLimit;
-    public int uncommonUpperLimit;
-    public int rareUpperLimit;
-    public int legendaryUpperLimit;
+    public static Dictionary<string, float> rarityWeight = new Dictionary<string, float>
+    {
+        {"Common", 50.0f},
+        {"Uncommon", 30.0f},
+        {"Rare", 15.0f},
+        {"Legendary", 5.0f},
+    };
 
-    public List<string> EggShellColorPrimary = new List<string>
+    public static List<string> EggShellColorPrimary = new List<string>
     {
         "#FFD09C", //0 - cream: mammal
-        "#FFFF5D", //1 - gold: avian
+        "#FFE053", //1 - gold: avian
         "#6EFFF7", //2 - aqua: aquatic
         "#B0FF00" //3 - lime: reptile
     };
 
-    public List<string> EggShellColorSecondary = new List<string>
+    public static List<string> EggShellColorSecondary = new List<string>
     {
         "#00FF5D", //0 - green: common
         "#3998FF", //1 - blue: uncommon
@@ -32,7 +36,7 @@ public class KaijuTraitLibrary
         "#FF6900" //3 - orange: legendary
     };
 
-    public List<string> KaijuColorBase = new List<string>
+    public static List<string> KaijuColorBase = new List<string>
     {
         "#FFFFFF", //0 -----white-----bright/soft colors
         "#FFBA5B", //1 ginger
@@ -50,7 +54,7 @@ public class KaijuTraitLibrary
         "#6536A2" //13 purple
     };
 
-    public List<string> KaijuColorSecondary = new List<string> //exclude black if base is black
+    public static List<string> KaijuColorSecondary = new List<string> //exclude black if base is black
     {
         "#3A3E44", //0 black
         "#743318", //1 autumn
@@ -68,7 +72,7 @@ public class KaijuTraitLibrary
         "#491092" //13 purple
     };
 
-    public List<string> KaijuColorTertiary = new List<string> //exclude white if base is white, exclude black if base is black; i cannot make them anymore black or white without sacrificing details
+    public static List<string> KaijuColorTertiary = new List<string> //exclude white if base is white, exclude black if base is black; i cannot make them anymore black or white without sacrificing details
     {
         "#FFFFFF", //0 white
         "#FFC52A", //1 ginger
@@ -86,7 +90,7 @@ public class KaijuTraitLibrary
         "#3A3E44" //13 black
     };
 
-    public List<string> EyeColor = new List<string>
+    public static List<string> EyeColor = new List<string>
     {
         //common
         "#FFC23B", //0 amber
@@ -117,9 +121,9 @@ public class KaijuTraitLibrary
         "#09D700"  //19 neon green
     };
 
-    string colorHex = "";
+    static string colorHex = "";
     
-    public void GenePick()
+    public static void GenePick()
     {
 
     }
