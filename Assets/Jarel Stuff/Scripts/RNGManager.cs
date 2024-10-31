@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// THIS IS JUST FOR OBSERVATION PURPOSES
 /// </summary>
-public class RNGManager : MonoBehaviour
+/*public class RNGManager : MonoBehaviour
 {
     int common = 0;
     int uncommon = 0;
@@ -84,3 +84,4 @@ public class RNGManager : MonoBehaviour
         Debug.Log("Common: " + common + "\nUncommon: " + uncommon + "\nRare: " + rare + "\nLegendary: " + legendary);
     }
 }
+*/

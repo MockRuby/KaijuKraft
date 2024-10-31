@@ -73,113 +73,30 @@ public class KaijuGeneration : MonoBehaviour
         kaijuTypeID = 0; //only 1 kaiju type available right now; remove/replace after brood mother script is complete
         kaijuRarityPick = Random.Range(0,21); //remove/replace after brood mother script is complete
 
-        switch (kaijuTypeID)
+        foreach (SpriteRenderer srColor in eggColorBase)
         {
-            case 0: //cream
-                foreach(SpriteRenderer srColor in eggColorBase)
-                {
-                    string colorHex = "#FFF7A8";
-                    Color newColor;
-                    if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
-                    {
-                        srColor.color = newColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 1: //yellow
-                foreach (SpriteRenderer srColor in eggColorBase)
-                {
-                    string colorHex = "#FFFE6C";
-                    Color newColor;
-                    if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
-                    {
-                        srColor.color = newColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 2: //cyan
-                foreach (SpriteRenderer srColor in eggColorBase)
-                {
-                    string colorHex = "#56FFF7";
-                    Color newColor;
-                    if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
-                    {
-                        srColor.color = newColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 3: //green
-                foreach (SpriteRenderer srColor in eggColorBase)
-                {
-                    string colorHex = "#00FF34";
-                    Color newColor;
-                    if (ColorUtility.TryParseHtmlString(colorHex, out newColor))
-                    {
-                        srColor.color = newColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            default:
-                break;
+            Color newColor;
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.EggShellColorPrimary[KaijuTraitLibrary.newKaijuTypeID], out newColor))
+            {
+                srColor.color = newColor;
+            }
+            else
+            {
+                Debug.LogError("Invalid hexcode");
+            }
         }
 
-
-        if (kaijuRarityPick >= 0 && kaijuRarityPick <= 8)
+        foreach (SpriteRenderer srColor in eggColorShell)
         {
-            //common
-            kaijuRarityID = 0;
-        }
-
-        else if (kaijuRarityPick >= 9 && kaijuRarityPick <= 14)
-        {
-            //uncommon
-            kaijuRarityID = 1;
-        }
-
-        else if (kaijuRarityPick >= 15 && kaijuRarityPick <= 18)
-        {
-            //rare
-            kaijuRarityID = 2;
-        }
-
-        else if (kaijuRarityPick >= 19 && kaijuRarityPick <= 20)
-        {
-            //legendary
-            kaijuRarityID = 3;
-        }
-
-        switch (kaijuRarityID) //for first kaiju type
-        {
-            case 0:
-                kaijuGeneID = Random.Range(0, 3);
-                break;
-            case 1:
-                kaijuGeneID = Random.Range(3, 5);
-                break;
-            case 2:
-                kaijuGeneID = Random.Range(5, 7);
-                break;
-            case 3:
-                kaijuGeneID = Random.Range(7, 9);
-                break;
-            default:
-                break;
+            Color newColor;
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.EggShellColorSecondary[KaijuTraitLibrary.newKaijuRarityID], out newColor))
+            {
+                srColor.color = newColor;
+            }
+            else
+            {
+                Debug.LogError("Invalid hexcode");
+            }
         }
     }
     void Update()
@@ -189,9 +106,6 @@ public class KaijuGeneration : MonoBehaviour
 
     public void KaijuGenePick()
     {
-
-
-
         KaijuBaseColorPick();
         switch (kaijuGeneID) //default gene is 0; if 0, no additional code necessary
         {
