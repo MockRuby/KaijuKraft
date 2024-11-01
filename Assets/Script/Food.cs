@@ -1,15 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Food : MonoBehaviour
 {
     public KaijuStats stats;
+
+    public KaijuFocus focused;
     // Start is called before the first frame update
     void Start()
     {
-        stats = GameObject.FindGameObjectWithTag("Kaiju").GetComponent<KaijuStats>();
+        if (focused.focusedKaiju != null)
+        {
+            stats = focused.focusedKaiju.GetComponent<KaijuStats>();
+        }
     }
 
     public void GiveGeneralFood()

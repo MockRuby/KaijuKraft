@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class KaijuStats : MonoBehaviour
 {
+
+    public KaijuFocus focused;
     // Stats for the Kaiju
     public int health; // Health points of the Kaiju
     public float currentHealth;
@@ -45,6 +47,11 @@ public class KaijuStats : MonoBehaviour
     public KaijuGeneration kaiGen;
 
     bool triggerMature = false;
+
+    private void Start()
+    {
+        focused = GameObject.FindGameObjectWithTag("GameManager").GetComponent<KaijuFocus>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -184,5 +191,10 @@ public class KaijuStats : MonoBehaviour
         }
 
         prevSystemTime = currentSystemTime;
+    }
+
+    private void OnMouseDown()
+    {
+        focused.focusedKaiju = gameObject;
     }
 }

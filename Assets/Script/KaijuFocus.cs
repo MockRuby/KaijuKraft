@@ -5,20 +5,35 @@ using UnityEngine;
 
 public class KaijuFocus : MonoBehaviour
 {
-    private void OnMouseDown()
-    {
-        
-    }
+    public GameObject focusedKaiju;
+    private GameObject previousKaiju;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public List<GameObject> buttons = new List<GameObject>();
 
+    public BottomMenu bMenu;
+    public Food food;
+    
     // Update is called once per frame
     void Update()
     {
-        
+        if (focusedKaiju != previousKaiju)
+        {
+            food.stats = focusedKaiju.GetComponent<KaijuStats>(); 
+            bMenu.Clicked();
+            bMenu.Flip();
+            previousKaiju = focusedKaiju;
+            for (int i = 0; i < buttons.Count; i ++)
+            {
+                buttons[i].SetActive(true);
+            }
+        }
+
+        if (focusedKaiju == null)
+        {
+            for (int i = 0; i < buttons.Count; i ++)
+            {
+                buttons[i].SetActive(false);
+            }
+        }
     }
 }
