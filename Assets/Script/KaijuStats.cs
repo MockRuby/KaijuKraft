@@ -8,6 +8,7 @@ public class KaijuStats : MonoBehaviour
 {
     // Stats for the Kaiju
     public int health; // Health points of the Kaiju
+    public float currentHealth;
     public int attack; // Attack points of the Kaiju
     public int defence; // Defence points of the Kaiju
     public int speed; // Speed of the Kaiju
@@ -69,7 +70,7 @@ public class KaijuStats : MonoBehaviour
         }
         else
         {
-            //egg.SetActive(false);
+            egg.SetActive(false);
             juv.SetActive(false);
             adult.SetActive(true);
             if (triggerMature)

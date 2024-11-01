@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -7,6 +8,7 @@ public class SavingKaiju : MonoBehaviour
 {
     public KaijuListData listData = new KaijuListData();
     public KaijuTrait traits = new KaijuTrait();
+
     // Update is called once per411 frame
     void Update()
     {
@@ -71,6 +73,10 @@ public class SavingKaiju : MonoBehaviour
 
     public void BattleLoad()
     {
+        string filepath = Application.persistentDataPath + "/KaijuData.json";
+        string jsonString = System.IO.File.ReadAllText(filepath);
+        listData = JsonUtility.FromJson<KaijuListData>(jsonString);
+        Debug.Log("KaijuLoaded");
         foreach (KaijuData kaijuData in listData.kaijuListData)
         {
             GameObject newKaiju = GameObject.FindGameObjectWithTag("Kaiju");
@@ -155,6 +161,7 @@ public class KaijuListData
 
     public void SavingAllKaijuData()
     {
+        kaijuListData.Clear();
         foreach (GameObject kaiju in GameObject.FindGameObjectsWithTag("Kaiju"))
         {
             KaijuData kaijuData = new KaijuData();

@@ -5,46 +5,11 @@ using UnityEngine;
 
 public class Food : MonoBehaviour
 {
-    public enum foodType
-    {
-        General,
-        Health,
-        Attack,
-        Defence,
-        Speed
-        
-    }
-
-    public foodType type;
     public KaijuStats stats;
     // Start is called before the first frame update
     void Start()
     {
         stats = GameObject.FindGameObjectWithTag("Kaiju").GetComponent<KaijuStats>();
-    }
-
-    private void OnMouseUpAsButton()
-    {
-        if (type == foodType.General)
-        {
-            GiveGeneralFood();
-        }
-        else if (type == foodType.Health)
-        {
-            GiveHealthFood();
-        }
-        else if (type == foodType.Attack)
-        {
-            GiveAttackFood();
-        }
-        else if (type == foodType.Defence)
-        {
-            GiveDefenceFood();
-        }
-        else if (type == foodType.Speed)
-        {
-            GiveSpeedFood();
-        }
     }
 
     public void GiveGeneralFood()
