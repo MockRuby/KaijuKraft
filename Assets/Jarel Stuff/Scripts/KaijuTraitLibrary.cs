@@ -1,35 +1,52 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public static class KaijuTraitLibrary
 {
+    public static List<string> kaijuSeedList = new List<string>();
 
-    public static float mammalWeight = 25.0f;
-    public static float avianWeight = 25.0f;
-    public static float aquaticWeight = 25.0f;
-    public static float reptileWeight = 25.0f;
-
-    public static float commonWeight = 50.0f;
-    public static float uncommonWeight = 30.0f;
-    public static float rareWeight = 15.0f;
-    public static float legendaryWeight = 5.0f;
-
-    public static float motherBellySaturation = 50.0f;
-    public static bool motherBellyFull = false;
+    static StringBuilder newSeed = new StringBuilder();
 
     public static int newKaijuTypeID = 0;
     public static int newKaijuRarityID = 0;
     public static int newKaijuGeneID = 0;
+    public static int newKaijuAttackPts = 0;
+    public static int newKaijuHealthPts = 0;
+    public static int newKaijuDefencePts = 0;
+    public static int newKaijuSpeedPts = 0;
+    public static int newKaijuBaseColorID = 0;
     public static string newKaijuBaseColor = "";
+    public static int newKaijuSecondaryColorID = 0;
     public static string newKaijuSecondaryColor = "";
+    public static int newKaijuTertiaryColorID = 0;
     public static string newKaijuTertiaryColor = "";
+    public static int newKaijuEyeLeftColorID = 0;
     public static string newKaijuEyeLeftColor = "";
+    public static int newKaijuEyeRightColorID = 0;
     public static string newKaijuEyeRightColor = "";
-    public static string newKaijuEggBaseColor = "";
-    public static string newKaijuEggSecondaryColor = "";
+    public static string newKaijuEggBaseColor = ""; //use typeID for color int ID
+    public static string newKaijuEggSecondaryColor = ""; //use rarityID for color int ID
 
+
+    public static List<string> kaijuTypeName = new List<string>
+    {
+        "Mammalian",
+        "Avian",
+        "Aquatic",
+        "Reptilian"
+    };
+
+    public static List<string> kaijuRarityName = new List<string>
+    {
+        "Common",
+        "Uncommon",
+        "Rare",
+        "Legendary"
+    };
+    
     public static List<string> EggShellColorPrimary = new List<string>
     {
         "#FFE8CC", //0 - cream: mammal
@@ -151,6 +168,9 @@ public static class KaijuTraitLibrary
                 newKaijuGeneID = 0;
                 break;
         }
+
+        KaijuColorPicks();
+        KaijuStatsRoll();
     }
 
     public static void KaijuGatcha()
@@ -165,13 +185,13 @@ public static class KaijuTraitLibrary
         float kaijuRoll;
         float rarityRoll;
         //sets up the ranges
-        mammalCap = mammalWeight;
-        avianCap = mammalCap + avianWeight;
-        aquaticCap = avianCap + aquaticWeight;
-        reptileCap = aquaticCap + reptileWeight;
-        commonCap = commonWeight;
-        uncommonCap = commonCap + uncommonWeight;
-        rareCap = uncommonCap + rareWeight;
+        mammalCap = BroodMotherData.mammalWeight;
+        avianCap = mammalCap + BroodMotherData.avianWeight;
+        aquaticCap = avianCap + BroodMotherData.aquaticWeight;
+        reptileCap = aquaticCap + BroodMotherData.reptileWeight;
+        commonCap = BroodMotherData.commonWeight;
+        uncommonCap = commonCap + BroodMotherData.uncommonWeight;
+        rareCap = uncommonCap + BroodMotherData.rareWeight;
 
         kaijuRoll = Random.Range(0.0f, 100.0f);
         rarityRoll = Random.Range(0.0f, 100.0f);
@@ -217,39 +237,34 @@ public static class KaijuTraitLibrary
 
     public static void KaijuColorPicks()
     {
-        int baseColorID;
-        int secondaryColorID;
-        int tertiaryColorID;
-        int eyeColorCount = KaijuEyeColor.Count;
+        newKaijuBaseColorID = Random.Range(0, 14);
+        newKaijuBaseColor = KaijuColorBase[newKaijuBaseColorID];
 
-        baseColorID = Random.Range(0, 14);
-        newKaijuBaseColor = KaijuColorBase[baseColorID];
-
-        if (baseColorID == 7)
+        if (newKaijuBaseColorID == 7)
         {
-            secondaryColorID = Random.Range(1, 14);
-            newKaijuSecondaryColor = KaijuColorSecondary[secondaryColorID];
+            newKaijuSecondaryColorID = Random.Range(1, 14);
+            newKaijuSecondaryColor = KaijuColorSecondary[newKaijuSecondaryColorID];
         }
         else
         {
-            secondaryColorID = Random.Range(0, 14);
-            newKaijuSecondaryColor = KaijuColorSecondary[secondaryColorID];
+            newKaijuSecondaryColorID = Random.Range(0, 14);
+            newKaijuSecondaryColor = KaijuColorSecondary[newKaijuSecondaryColorID];
         }
 
-        if (baseColorID == 0)
+        if (newKaijuBaseColorID == 0)
         {
-            tertiaryColorID = Random.Range(1, 14);
-            newKaijuTertiaryColor = KaijuColorTertiary[tertiaryColorID];
+            newKaijuTertiaryColorID = Random.Range(1, 14);
+            newKaijuTertiaryColor = KaijuColorTertiary[newKaijuTertiaryColorID];
         }
-        else if (baseColorID == 7 || secondaryColorID == 0)
+        else if (newKaijuBaseColorID == 7 || newKaijuSecondaryColorID == 0)
         {
-            tertiaryColorID = Random.Range(0, 13);
-            newKaijuTertiaryColor = KaijuColorTertiary[tertiaryColorID];
+            newKaijuTertiaryColorID = Random.Range(0, 13);
+            newKaijuTertiaryColor = KaijuColorTertiary[newKaijuTertiaryColorID];
         }
         else
         {
-            tertiaryColorID = Random.Range(0, 14);
-            newKaijuTertiaryColor = KaijuColorTertiary[tertiaryColorID];
+            newKaijuTertiaryColorID = Random.Range(0, 14);
+            newKaijuTertiaryColor = KaijuColorTertiary[newKaijuTertiaryColorID];
         }
 
         KaijuEyeColorPicks();
@@ -257,38 +272,179 @@ public static class KaijuTraitLibrary
 
     public static void KaijuEyeColorPicks()
     {
-        int eyeColorID;
-        int eyeColorHeteroID;
-
         switch (newKaijuRarityID)
         {
             case 0:
-                eyeColorID = Random.Range(0,7);
+                newKaijuEyeLeftColorID = Random.Range(0,7);
                 break;
             case 1:
-                eyeColorID = Random.Range(0, 12);
+                newKaijuEyeLeftColorID = Random.Range(0, 12);
                 break;
             case 2:
-                eyeColorID = Random.Range(0, 17);
+                newKaijuEyeLeftColorID = Random.Range(0, 17);
                 break;
             case 3:
-                eyeColorID = Random.Range(0, 20);
+                newKaijuEyeLeftColorID = Random.Range(0, 20);
                 break;
             default:
-                eyeColorID = Random.Range(0, 7);
+                newKaijuEyeLeftColorID = Random.Range(0, 7);
                 break;
         }
 
         if (newKaijuRarityID == 3)
         {
-            eyeColorHeteroID = Random.Range(0, 20);
-            newKaijuEyeLeftColor = KaijuEyeColor[eyeColorID];
-            newKaijuEyeRightColor = KaijuEyeColor[eyeColorHeteroID];
+            newKaijuEyeRightColorID = Random.Range(0, 20);
+            newKaijuEyeLeftColor = KaijuEyeColor[newKaijuEyeLeftColorID];
+            newKaijuEyeRightColor = KaijuEyeColor[newKaijuEyeRightColorID];
         }
         else
         {
-            newKaijuEyeLeftColor = KaijuEyeColor[eyeColorID];
-            newKaijuEyeRightColor = KaijuEyeColor[eyeColorID];
+            newKaijuEyeRightColorID = newKaijuEyeLeftColorID;
+            newKaijuEyeLeftColor = KaijuEyeColor[newKaijuEyeLeftColorID];
+            newKaijuEyeRightColor = KaijuEyeColor[newKaijuEyeRightColorID];
         }
+    }
+
+    public static void KaijuStatsRoll()
+    {
+        switch (newKaijuTypeID)
+        {
+            case 0: //mammal
+                newKaijuAttackPts = 18;
+                newKaijuDefencePts = 18;
+                newKaijuHealthPts = 24;
+                newKaijuSpeedPts = 15;
+
+                if (newKaijuRarityID == 1)
+                {
+                    newKaijuAttackPts = newKaijuAttackPts * 2;
+                    newKaijuDefencePts = newKaijuDefencePts * 2;
+                    newKaijuHealthPts = Mathf.RoundToInt(newKaijuHealthPts * 2.5f);
+                    newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 1.5f);
+                }
+                else if (newKaijuRarityID == 2)
+                {
+                    newKaijuAttackPts = newKaijuAttackPts * 4;
+                    newKaijuDefencePts = newKaijuDefencePts * 4;
+                    newKaijuHealthPts = Mathf.RoundToInt(newKaijuHealthPts * 4.5f);
+                    newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 3.5f);
+                }
+                else if (newKaijuRarityID == 3)
+                {
+                    newKaijuAttackPts = newKaijuAttackPts * 7;
+                    newKaijuDefencePts = newKaijuDefencePts * 7;
+                    newKaijuHealthPts = Mathf.RoundToInt(newKaijuHealthPts * 7.5f);
+                    newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 6.5f);
+                }
+                break;
+            case 1: //avian
+                newKaijuAttackPts = 14;
+                newKaijuDefencePts = 12;
+                newKaijuHealthPts = 14;
+                newKaijuSpeedPts = 24;
+
+                if (newKaijuRarityID == 1)
+                {
+                    newKaijuAttackPts = newKaijuAttackPts * 2;
+                    newKaijuDefencePts = Mathf.RoundToInt(newKaijuDefencePts * 1.5f);
+                    newKaijuHealthPts = newKaijuHealthPts * 2;
+                    newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 2.5f);
+                }
+                else if (newKaijuRarityID == 2)
+                {
+                    newKaijuAttackPts = newKaijuAttackPts * 4;
+                    newKaijuDefencePts = Mathf.RoundToInt(newKaijuDefencePts * 3.5f);
+                    newKaijuHealthPts = newKaijuHealthPts * 4;
+                    newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 4.5f);
+                }
+                else if (newKaijuRarityID == 3)
+                {
+                    newKaijuAttackPts = newKaijuAttackPts * 7;
+                    newKaijuDefencePts = Mathf.RoundToInt(newKaijuDefencePts * 6.5f);
+                    newKaijuHealthPts = newKaijuHealthPts * 7;
+                    newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 7.5f);
+                }
+                break;
+            case 2: //aquatic
+                newKaijuAttackPts = 12;
+                newKaijuDefencePts = 24;
+                newKaijuHealthPts = 20;
+                newKaijuSpeedPts = 18;
+
+                if (newKaijuRarityID == 1)
+                {
+                    newKaijuAttackPts = Mathf.RoundToInt(newKaijuAttackPts * 1.5f);
+                    newKaijuDefencePts = Mathf.RoundToInt(newKaijuDefencePts * 2.5f);
+                    newKaijuHealthPts = newKaijuHealthPts * 2;
+                    newKaijuSpeedPts = newKaijuSpeedPts * 2;
+                }
+                else if (newKaijuRarityID == 2)
+                {
+                    newKaijuAttackPts = Mathf.RoundToInt(newKaijuAttackPts * 3.5f);
+                    newKaijuDefencePts = Mathf.RoundToInt(newKaijuDefencePts * 4.5f);
+                    newKaijuHealthPts = newKaijuHealthPts * 4;
+                    newKaijuSpeedPts = newKaijuSpeedPts * 4;
+                }
+                else if (newKaijuRarityID == 3)
+                {
+                    newKaijuAttackPts = Mathf.RoundToInt(newKaijuAttackPts * 6.5f);
+                    newKaijuDefencePts = Mathf.RoundToInt(newKaijuDefencePts * 7.5f);
+                    newKaijuHealthPts = newKaijuHealthPts * 7;
+                    newKaijuSpeedPts = newKaijuSpeedPts * 7;
+                }
+                break;
+            case 3: //reptilian
+                newKaijuAttackPts = 24;
+                newKaijuDefencePts = 15;
+                newKaijuHealthPts = 14;
+                newKaijuSpeedPts = 11;
+
+                if (newKaijuRarityID == 1)
+                {
+                    newKaijuAttackPts = Mathf.RoundToInt(newKaijuAttackPts * 2.5f);
+                    newKaijuDefencePts = newKaijuDefencePts * 2;
+                    newKaijuHealthPts = newKaijuHealthPts * 2;
+                    newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 1.5f);
+                }
+                else if (newKaijuRarityID == 2)
+                {
+                    newKaijuAttackPts = Mathf.RoundToInt(newKaijuAttackPts * 4.5f);
+                    newKaijuDefencePts = newKaijuDefencePts * 4;
+                    newKaijuHealthPts = newKaijuHealthPts * 4;
+                    newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 3.5f);
+                }
+                else if (newKaijuRarityID == 3)
+                {
+                    newKaijuAttackPts = Mathf.RoundToInt(newKaijuAttackPts * 7.5f);
+                    newKaijuDefencePts = newKaijuDefencePts * 7;
+                    newKaijuHealthPts = newKaijuHealthPts * 7;
+                    newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 6.5f);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void BuildAndStoreSeed(int typeID, int rarityID, int geneID, int baseColorID, int secondaryColorID, int tertiaryColorID, int eyeLeftColorID, int eyeRightColorID, int attackValue, int defenceValue, int healthValue, int speedValue)
+    {
+        newSeed.Append(typeID.ToString("D2"));
+        newSeed.Append(rarityID.ToString("D2"));
+        newSeed.Append(geneID.ToString("D2"));
+        newSeed.Append(baseColorID.ToString("D2"));
+        newSeed.Append(secondaryColorID.ToString("D2"));
+        newSeed.Append(tertiaryColorID.ToString("D2"));
+        newSeed.Append(eyeLeftColorID.ToString("D2"));
+        newSeed.Append(eyeRightColorID.ToString("D2"));
+
+        newSeed.Append(attackValue.ToString("D3"));
+        newSeed.Append(defenceValue.ToString("D3"));
+        newSeed.Append(healthValue.ToString("D3"));
+        newSeed.Append(speedValue.ToString("D3"));
+
+        string fullSeed = newSeed.ToString();
+        kaijuSeedList.Add(fullSeed);
+        newSeed.Clear();
+        Debug.Log(fullSeed);
     }
 }

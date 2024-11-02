@@ -16,6 +16,7 @@ public class MotherManager : MonoBehaviour
     public GameObject eggBaseObj;
     public GameObject eggShellObj;
     public GameObject getEggButtonObj;
+    public GameObject continueButtonObj;
 
     public Button feedButton;
     public Button habitatButton;
@@ -46,6 +47,7 @@ public class MotherManager : MonoBehaviour
     float typeWeightMax = 85.0f;
 
     bool readyToFeed;
+    bool feedPanelActive = false;
 
     float prevSystemTime = 0;
 
@@ -53,7 +55,7 @@ public class MotherManager : MonoBehaviour
     void Start()
     {
         feedPage = 0;
-        if (KaijuTraitLibrary.motherBellySaturation < 65.0f)
+        if (BroodMotherData.motherBellySaturation < 65.0f)
         {
             readyToFeed = true;
         }
@@ -62,7 +64,7 @@ public class MotherManager : MonoBehaviour
             readyToFeed = false;
         }
 
-        if (eggClock.eggTimer > 0)
+        if (BroodMotherData.eggTimer > 0)
         {
             feedButton.interactable = true;
         }
@@ -78,39 +80,48 @@ public class MotherManager : MonoBehaviour
     void Update()
     {
         float currentSystemTime = (float)DateTime.Now.TimeOfDay.TotalSeconds;
-        if (!KaijuTraitLibrary.motherBellyFull || eggClock.eggTimer > 0)
+        if (!BroodMotherData.motherBellyFull && BroodMotherData.eggTimer > 0)
         {
             if (prevSystemTime == 0)
             {
-                KaijuTraitLibrary.motherBellySaturation -= 0.01f * Time.deltaTime;
+                BroodMotherData.motherBellySaturation -= 0.1f * Time.deltaTime;
             }
             else
             {
-                KaijuTraitLibrary.motherBellySaturation -= (currentSystemTime - prevSystemTime);
+                BroodMotherData.motherBellySaturation -= (0.1f * (currentSystemTime - prevSystemTime));
             }
-            KaijuTraitLibrary.motherBellySaturation = Mathf.Clamp(KaijuTraitLibrary.motherBellySaturation, 0, 100);
+            BroodMotherData.motherBellySaturation = Mathf.Clamp(BroodMotherData.motherBellySaturation, 0, 100);
         }
         prevSystemTime = currentSystemTime;
-        bellyHungerSlider.value = KaijuTraitLibrary.motherBellySaturation;
+        bellyHungerSlider.value = BroodMotherData.motherBellySaturation;
 
-        if (KaijuTraitLibrary.motherBellySaturation < 65.0f)
+        if (BroodMotherData.motherBellySaturation < 100.0f)
         {
             readyToFeed = true;
         }
 
-        if (KaijuTraitLibrary.motherBellySaturation < 35.0f)
+        if (!feedPanelActive && BroodMotherData.eggTimer > 0 && !BroodMotherData.motherBellyFull)
+        {
+            feedButton.interactable = true;
+        }
+        else
+        {
+            feedButton.interactable = false;
+        }
+
+        if (BroodMotherData.motherBellySaturation < 35.0f)
         {
             bellySliderImage.GetComponent<Image>().color = Color.red;
         }
-        else if (KaijuTraitLibrary.motherBellySaturation < 65.0f)
+        else if (BroodMotherData.motherBellySaturation < 65.0f)
         {
             bellySliderImage.GetComponent<Image>().color = Color.yellow;
         }
-        else if (KaijuTraitLibrary.motherBellySaturation < 100.0f)
+        else if (BroodMotherData.motherBellySaturation < 100.0f)
         {
             bellySliderImage.GetComponent<Image>().color = Color.green;
         }
-        else if (KaijuTraitLibrary.motherBellySaturation <= 0.0f)
+        else if (BroodMotherData.motherBellySaturation <= 0.0f)
         {
             ResetWeights();
         }
@@ -118,11 +129,20 @@ public class MotherManager : MonoBehaviour
         {
             bellySliderImage.GetComponent<Image>().color = Color.cyan;
         }
+
+        if (BroodMotherData.eggTimer == 0 && !BroodMotherData.getEgg)
+        {
+            feedButton.interactable = false;
+            readyToFeed = false;
+            getEggButtonObj.SetActive(true);
+        }
     }
 
     public void EggRoll()
     {
+        BroodMotherData.getEgg = true;
         getEggButtonObj.SetActive(false);
+        continueButtonObj.SetActive(true);
         Color newColor;
         KaijuTraitLibrary.KaijuGatcha();
 
@@ -138,13 +158,27 @@ public class MotherManager : MonoBehaviour
         {
             eggShellSprite.color = newColor;
         }
+
+        KaijuTraitLibrary.BuildAndStoreSeed(KaijuTraitLibrary.newKaijuTypeID, KaijuTraitLibrary.newKaijuRarityID, KaijuTraitLibrary.newKaijuGeneID, KaijuTraitLibrary.newKaijuBaseColorID, KaijuTraitLibrary.newKaijuSecondaryColorID, KaijuTraitLibrary.newKaijuTertiaryColorID, KaijuTraitLibrary.newKaijuEyeLeftColorID, KaijuTraitLibrary.newKaijuEyeRightColorID, KaijuTraitLibrary.newKaijuAttackPts, KaijuTraitLibrary.newKaijuDefencePts, KaijuTraitLibrary.newKaijuHealthPts, KaijuTraitLibrary.newKaijuSpeedPts);
+    }
+
+    public void ResumeBreed()
+    {
+        BroodMotherData.eggTimer = 30f;
+        BroodMotherData.getEgg = false;
+        ResetWeights();
+        readyToFeed = true;
+        continueButtonObj.SetActive(false);
+        eggBaseObj.SetActive(false);
+        eggShellObj.SetActive(false);
+        eggObj.SetActive(true);
     }
 
     public void CloseFeedPanel()
     {
         feedPanelObj.SetActive(false);
 
-        feedButton.interactable = true;
+        feedPanelActive = false;
         habitatButton.interactable = true;
     }
 
@@ -164,7 +198,7 @@ public class MotherManager : MonoBehaviour
             foodCanvasObj.SetActive(true);
         }
 
-        feedButton.interactable = false;
+        feedPanelActive = true;
         habitatButton.interactable = false;
     }
 
@@ -186,127 +220,127 @@ public class MotherManager : MonoBehaviour
 
     void ResetWeights()
     {
-        KaijuTraitLibrary.mammalWeight = 25.0f;
-        mammalSlider.value = KaijuTraitLibrary.mammalWeight;
-        KaijuTraitLibrary.avianWeight = 25.0f;
-        avianSlider.value = KaijuTraitLibrary.avianWeight;
-        KaijuTraitLibrary.aquaticWeight = 25.0f;
-        aquaticSlider.value = KaijuTraitLibrary.aquaticWeight;
-        KaijuTraitLibrary.reptileWeight = 25.0f;
-        reptileSlider.value = KaijuTraitLibrary.reptileWeight;
+        BroodMotherData.mammalWeight = 25.0f;
+        mammalSlider.value = BroodMotherData.mammalWeight;
+        BroodMotherData.avianWeight = 25.0f;
+        avianSlider.value = BroodMotherData.avianWeight;
+        BroodMotherData.aquaticWeight = 25.0f;
+        aquaticSlider.value = BroodMotherData.aquaticWeight;
+        BroodMotherData.reptileWeight = 25.0f;
+        reptileSlider.value = BroodMotherData.reptileWeight;
 
-        KaijuTraitLibrary.commonWeight = 50.0f;
-        commonSlider.value = KaijuTraitLibrary.commonWeight;
-        KaijuTraitLibrary.uncommonWeight = 30.0f;
-        uncommonSlider.value = KaijuTraitLibrary.uncommonWeight;
-        KaijuTraitLibrary.rareWeight = 15.0f;
-        rareSlider.value = KaijuTraitLibrary.rareWeight;
-        KaijuTraitLibrary.legendaryWeight = 5.0f;
-        legendarySlider.value = KaijuTraitLibrary.legendaryWeight;
+        BroodMotherData.commonWeight = 50.0f;
+        commonSlider.value = BroodMotherData.commonWeight;
+        BroodMotherData.uncommonWeight = 30.0f;
+        uncommonSlider.value = BroodMotherData.uncommonWeight;
+        BroodMotherData.rareWeight = 15.0f;
+        rareSlider.value = BroodMotherData.rareWeight;
+        BroodMotherData.legendaryWeight = 5.0f;
+        legendarySlider.value = BroodMotherData.legendaryWeight;
     }
 
     void UpdateSliders()
     {
-        mammalSlider.value = KaijuTraitLibrary.mammalWeight;
-        avianSlider.value = KaijuTraitLibrary.avianWeight;
-        aquaticSlider.value = KaijuTraitLibrary.aquaticWeight;
-        reptileSlider.value = KaijuTraitLibrary.reptileWeight;
+        mammalSlider.value = BroodMotherData.mammalWeight;
+        avianSlider.value = BroodMotherData.avianWeight;
+        aquaticSlider.value = BroodMotherData.aquaticWeight;
+        reptileSlider.value = BroodMotherData.reptileWeight;
 
-        commonSlider.value = KaijuTraitLibrary.commonWeight;
-        uncommonSlider.value = KaijuTraitLibrary.uncommonWeight;
-        rareSlider.value = KaijuTraitLibrary.rareWeight;
-        legendarySlider.value = KaijuTraitLibrary.legendaryWeight;
+        commonSlider.value = BroodMotherData.commonWeight;
+        uncommonSlider.value = BroodMotherData.uncommonWeight;
+        rareSlider.value = BroodMotherData.rareWeight;
+        legendarySlider.value = BroodMotherData.legendaryWeight;
 
-        bellyHungerSlider.value = KaijuTraitLibrary.motherBellySaturation;
+        bellyHungerSlider.value = BroodMotherData.motherBellySaturation;
     }
 
     //delay before player can feed the broodmother again
     IEnumerator BellyDigest()
     {
         yield return new WaitForSeconds(30.0f);
-        KaijuTraitLibrary.motherBellyFull = false;
+        BroodMotherData.motherBellyFull = false;
     }
 
     void CapMinMaxWeights()
     {
         //kaiju type
-        if (KaijuTraitLibrary.mammalWeight < typeWeightMin) //prevent weight from going below min threshold
+        if (BroodMotherData.mammalWeight < typeWeightMin) //prevent weight from going below min threshold
         {
-            KaijuTraitLibrary.mammalWeight = typeWeightMin;
+            BroodMotherData.mammalWeight = typeWeightMin;
         }
-        else if (KaijuTraitLibrary.mammalWeight > typeWeightMax) //prevent weight from going beyond max threshold
+        else if (BroodMotherData.mammalWeight > typeWeightMax) //prevent weight from going beyond max threshold
         {
-            KaijuTraitLibrary.mammalWeight = typeWeightMax;
-        }
-
-        if (KaijuTraitLibrary.avianWeight < typeWeightMin)
-        {
-            KaijuTraitLibrary.avianWeight = typeWeightMin;
-        }
-        else if (KaijuTraitLibrary.avianWeight > typeWeightMax)
-        {
-            KaijuTraitLibrary.avianWeight = typeWeightMax;
+            BroodMotherData.mammalWeight = typeWeightMax;
         }
 
-        if (KaijuTraitLibrary.aquaticWeight < typeWeightMin)
+        if (BroodMotherData.avianWeight < typeWeightMin)
         {
-            KaijuTraitLibrary.aquaticWeight = typeWeightMin;
+            BroodMotherData.avianWeight = typeWeightMin;
         }
-        else if (KaijuTraitLibrary.aquaticWeight > typeWeightMax)
+        else if (BroodMotherData.avianWeight > typeWeightMax)
         {
-            KaijuTraitLibrary.aquaticWeight = typeWeightMax;
+            BroodMotherData.avianWeight = typeWeightMax;
         }
 
-        if (KaijuTraitLibrary.reptileWeight < typeWeightMin)
+        if (BroodMotherData.aquaticWeight < typeWeightMin)
         {
-            KaijuTraitLibrary.reptileWeight = typeWeightMin;
+            BroodMotherData.aquaticWeight = typeWeightMin;
         }
-        else if (KaijuTraitLibrary.reptileWeight > typeWeightMax)
+        else if (BroodMotherData.aquaticWeight > typeWeightMax)
         {
-            KaijuTraitLibrary.reptileWeight = typeWeightMax;
+            BroodMotherData.aquaticWeight = typeWeightMax;
+        }
+
+        if (BroodMotherData.reptileWeight < typeWeightMin)
+        {
+            BroodMotherData.reptileWeight = typeWeightMin;
+        }
+        else if (BroodMotherData.reptileWeight > typeWeightMax)
+        {
+            BroodMotherData.reptileWeight = typeWeightMax;
         }
 
         //rarity
-        if (KaijuTraitLibrary.commonWeight < rarityWeightMin)
+        if (BroodMotherData.commonWeight < rarityWeightMin)
         {
-            KaijuTraitLibrary.commonWeight = rarityWeightMin;
+            BroodMotherData.commonWeight = rarityWeightMin;
         }
-        else if (KaijuTraitLibrary.commonWeight > rarityWeightMax)
+        else if (BroodMotherData.commonWeight > rarityWeightMax)
         {
-            KaijuTraitLibrary.commonWeight = rarityWeightMax;
-        }
-
-        if (KaijuTraitLibrary.uncommonWeight < rarityWeightMin)
-        {
-            KaijuTraitLibrary.uncommonWeight = rarityWeightMin;
-        }
-        else if (KaijuTraitLibrary.uncommonWeight > rarityWeightMax)
-        {
-            KaijuTraitLibrary.uncommonWeight = rarityWeightMax;
+            BroodMotherData.commonWeight = rarityWeightMax;
         }
 
-        if (KaijuTraitLibrary.rareWeight < rarityWeightMin)
+        if (BroodMotherData.uncommonWeight < rarityWeightMin)
         {
-            KaijuTraitLibrary.rareWeight = rarityWeightMin;
+            BroodMotherData.uncommonWeight = rarityWeightMin;
         }
-        else if (KaijuTraitLibrary.rareWeight > rarityWeightMax)
+        else if (BroodMotherData.uncommonWeight > rarityWeightMax)
         {
-            KaijuTraitLibrary.rareWeight = rarityWeightMax;
-        }
-
-        if (KaijuTraitLibrary.legendaryWeight < rarityWeightMin)
-        {
-            KaijuTraitLibrary.legendaryWeight = rarityWeightMin;
-        }
-        else if (KaijuTraitLibrary.legendaryWeight > rarityWeightMax)
-        {
-            KaijuTraitLibrary.legendaryWeight = rarityWeightMax;
+            BroodMotherData.uncommonWeight = rarityWeightMax;
         }
 
-        if (KaijuTraitLibrary.motherBellySaturation >= 100.0f)
+        if (BroodMotherData.rareWeight < rarityWeightMin)
         {
-            KaijuTraitLibrary.motherBellySaturation = 100.0f;
-            KaijuTraitLibrary.motherBellyFull = true;
+            BroodMotherData.rareWeight = rarityWeightMin;
+        }
+        else if (BroodMotherData.rareWeight > rarityWeightMax)
+        {
+            BroodMotherData.rareWeight = rarityWeightMax;
+        }
+
+        if (BroodMotherData.legendaryWeight < rarityWeightMin)
+        {
+            BroodMotherData.legendaryWeight = rarityWeightMin;
+        }
+        else if (BroodMotherData.legendaryWeight > rarityWeightMax)
+        {
+            BroodMotherData.legendaryWeight = rarityWeightMax;
+        }
+
+        if (BroodMotherData.motherBellySaturation >= 100.0f)
+        {
+            BroodMotherData.motherBellySaturation = 100.0f;
+            BroodMotherData.motherBellyFull = true;
             readyToFeed = false;
             StartCoroutine(BellyDigest());
         }
@@ -319,11 +353,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.5f;
-            KaijuTraitLibrary.mammalWeight += 0.3f;
-            KaijuTraitLibrary.avianWeight -= 0.1f;
-            KaijuTraitLibrary.aquaticWeight -= 0.1f;
-            KaijuTraitLibrary.reptileWeight -= 0.1f;
+            BroodMotherData.motherBellySaturation += 0.5f;
+            BroodMotherData.mammalWeight += 0.3f;
+            BroodMotherData.avianWeight -= 0.1f;
+            BroodMotherData.aquaticWeight -= 0.1f;
+            BroodMotherData.reptileWeight -= 0.1f;
 
             CapMinMaxWeights();
         }
@@ -333,16 +367,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 1.0f;
-            KaijuTraitLibrary.mammalWeight += 0.6f;
-            KaijuTraitLibrary.avianWeight -= 0.2f;
-            KaijuTraitLibrary.aquaticWeight -= 0.2f;
-            KaijuTraitLibrary.reptileWeight -= 0.2f;
+            BroodMotherData.motherBellySaturation += 1.0f;
+            BroodMotherData.mammalWeight += 0.6f;
+            BroodMotherData.avianWeight -= 0.2f;
+            BroodMotherData.aquaticWeight -= 0.2f;
+            BroodMotherData.reptileWeight -= 0.2f;
 
-            KaijuTraitLibrary.commonWeight -= 0.22f;
-            KaijuTraitLibrary.uncommonWeight += 0.5f;
-            KaijuTraitLibrary.rareWeight -= 0.12f;
-            KaijuTraitLibrary.legendaryWeight -= 0.16f;
+            BroodMotherData.commonWeight -= 0.22f;
+            BroodMotherData.uncommonWeight += 0.5f;
+            BroodMotherData.rareWeight -= 0.12f;
+            BroodMotherData.legendaryWeight -= 0.16f;
 
             CapMinMaxWeights();
         }
@@ -352,16 +386,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 1.5f;
-            KaijuTraitLibrary.mammalWeight += 0.9f;
-            KaijuTraitLibrary.avianWeight -= 0.3f;
-            KaijuTraitLibrary.aquaticWeight -= 0.3f;
-            KaijuTraitLibrary.reptileWeight -= 0.3f;
+            BroodMotherData.motherBellySaturation += 1.5f;
+            BroodMotherData.mammalWeight += 0.9f;
+            BroodMotherData.avianWeight -= 0.3f;
+            BroodMotherData.aquaticWeight -= 0.3f;
+            BroodMotherData.reptileWeight -= 0.3f;
 
-            KaijuTraitLibrary.commonWeight -= 0.32f;
-            KaijuTraitLibrary.uncommonWeight += 0.75f;
-            KaijuTraitLibrary.rareWeight -= 0.22f;
-            KaijuTraitLibrary.legendaryWeight -= 0.21f;
+            BroodMotherData.commonWeight -= 0.32f;
+            BroodMotherData.uncommonWeight += 0.75f;
+            BroodMotherData.rareWeight -= 0.22f;
+            BroodMotherData.legendaryWeight -= 0.21f;
 
             CapMinMaxWeights();
         }
@@ -371,14 +405,14 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 2.0f;
-            KaijuTraitLibrary.mammalWeight += 1.2f;
-            KaijuTraitLibrary.avianWeight -= 0.4f;
-            KaijuTraitLibrary.aquaticWeight -= 0.4f;
-            KaijuTraitLibrary.reptileWeight -= 0.4f;
+            BroodMotherData.motherBellySaturation += 2.0f;
+            BroodMotherData.mammalWeight += 1.2f;
+            BroodMotherData.avianWeight -= 0.4f;
+            BroodMotherData.aquaticWeight -= 0.4f;
+            BroodMotherData.reptileWeight -= 0.4f;
 
-            KaijuTraitLibrary.commonWeight -= 0.3f;
-            KaijuTraitLibrary.uncommonWeight += 0.3f;
+            BroodMotherData.commonWeight -= 0.3f;
+            BroodMotherData.uncommonWeight += 0.3f;
 
             CapMinMaxWeights();
         }
@@ -389,11 +423,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.5f;
-            KaijuTraitLibrary.mammalWeight -= 0.1f;
-            KaijuTraitLibrary.avianWeight += 0.3f;
-            KaijuTraitLibrary.aquaticWeight -= 0.1f;
-            KaijuTraitLibrary.reptileWeight -= 0.1f;
+            BroodMotherData.motherBellySaturation += 0.5f;
+            BroodMotherData.mammalWeight -= 0.1f;
+            BroodMotherData.avianWeight += 0.3f;
+            BroodMotherData.aquaticWeight -= 0.1f;
+            BroodMotherData.reptileWeight -= 0.1f;
 
             CapMinMaxWeights();
         }
@@ -403,16 +437,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 1.0f;
-            KaijuTraitLibrary.mammalWeight -= 0.2f;
-            KaijuTraitLibrary.avianWeight += 0.6f;
-            KaijuTraitLibrary.aquaticWeight -= 0.2f;
-            KaijuTraitLibrary.reptileWeight -= 0.2f;
+            BroodMotherData.motherBellySaturation += 1.0f;
+            BroodMotherData.mammalWeight -= 0.2f;
+            BroodMotherData.avianWeight += 0.6f;
+            BroodMotherData.aquaticWeight -= 0.2f;
+            BroodMotherData.reptileWeight -= 0.2f;
 
-            KaijuTraitLibrary.commonWeight -= 0.22f;
-            KaijuTraitLibrary.uncommonWeight += 0.5f;
-            KaijuTraitLibrary.rareWeight -= 0.12f;
-            KaijuTraitLibrary.legendaryWeight -= 0.16f;
+            BroodMotherData.commonWeight -= 0.22f;
+            BroodMotherData.uncommonWeight += 0.5f;
+            BroodMotherData.rareWeight -= 0.12f;
+            BroodMotherData.legendaryWeight -= 0.16f;
 
             CapMinMaxWeights();
         }
@@ -422,16 +456,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 1.5f;
-            KaijuTraitLibrary.mammalWeight -= 0.3f;
-            KaijuTraitLibrary.avianWeight += 0.9f;
-            KaijuTraitLibrary.aquaticWeight -= 0.3f;
-            KaijuTraitLibrary.reptileWeight -= 0.3f;
+            BroodMotherData.motherBellySaturation += 1.5f;
+            BroodMotherData.mammalWeight -= 0.3f;
+            BroodMotherData.avianWeight += 0.9f;
+            BroodMotherData.aquaticWeight -= 0.3f;
+            BroodMotherData.reptileWeight -= 0.3f;
 
-            KaijuTraitLibrary.commonWeight -= 0.32f;
-            KaijuTraitLibrary.uncommonWeight += 0.75f;
-            KaijuTraitLibrary.rareWeight -= 0.22f;
-            KaijuTraitLibrary.legendaryWeight -= 0.21f;
+            BroodMotherData.commonWeight -= 0.32f;
+            BroodMotherData.uncommonWeight += 0.75f;
+            BroodMotherData.rareWeight -= 0.22f;
+            BroodMotherData.legendaryWeight -= 0.21f;
 
             CapMinMaxWeights();
         }
@@ -441,14 +475,14 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 2.0f;
-            KaijuTraitLibrary.mammalWeight -= 0.4f;
-            KaijuTraitLibrary.avianWeight += 1.2f;
-            KaijuTraitLibrary.aquaticWeight -= 0.4f;
-            KaijuTraitLibrary.reptileWeight -= 0.4f;
+            BroodMotherData.motherBellySaturation += 2.0f;
+            BroodMotherData.mammalWeight -= 0.4f;
+            BroodMotherData.avianWeight += 1.2f;
+            BroodMotherData.aquaticWeight -= 0.4f;
+            BroodMotherData.reptileWeight -= 0.4f;
 
-            KaijuTraitLibrary.commonWeight -= 0.3f;
-            KaijuTraitLibrary.uncommonWeight += 0.3f;
+            BroodMotherData.commonWeight -= 0.3f;
+            BroodMotherData.uncommonWeight += 0.3f;
 
             CapMinMaxWeights();
         }
@@ -459,11 +493,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.5f;
-            KaijuTraitLibrary.mammalWeight -= 0.1f;
-            KaijuTraitLibrary.avianWeight -= 0.1f;
-            KaijuTraitLibrary.aquaticWeight += 0.3f;
-            KaijuTraitLibrary.reptileWeight -= 0.1f;
+            BroodMotherData.motherBellySaturation += 0.5f;
+            BroodMotherData.mammalWeight -= 0.1f;
+            BroodMotherData.avianWeight -= 0.1f;
+            BroodMotherData.aquaticWeight += 0.3f;
+            BroodMotherData.reptileWeight -= 0.1f;
 
             CapMinMaxWeights();
         }
@@ -473,16 +507,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 1.0f;
-            KaijuTraitLibrary.mammalWeight -= 0.2f;
-            KaijuTraitLibrary.avianWeight -= 0.2f;
-            KaijuTraitLibrary.aquaticWeight += 0.6f;
-            KaijuTraitLibrary.reptileWeight -= 0.2f;
+            BroodMotherData.motherBellySaturation += 1.0f;
+            BroodMotherData.mammalWeight -= 0.2f;
+            BroodMotherData.avianWeight -= 0.2f;
+            BroodMotherData.aquaticWeight += 0.6f;
+            BroodMotherData.reptileWeight -= 0.2f;
 
-            KaijuTraitLibrary.commonWeight -= 0.22f;
-            KaijuTraitLibrary.uncommonWeight += 0.5f;
-            KaijuTraitLibrary.rareWeight -= 0.12f;
-            KaijuTraitLibrary.legendaryWeight -= 0.16f;
+            BroodMotherData.commonWeight -= 0.22f;
+            BroodMotherData.uncommonWeight += 0.5f;
+            BroodMotherData.rareWeight -= 0.12f;
+            BroodMotherData.legendaryWeight -= 0.16f;
 
             CapMinMaxWeights();
         }
@@ -492,16 +526,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 1.5f;
-            KaijuTraitLibrary.mammalWeight -= 0.3f;
-            KaijuTraitLibrary.avianWeight -= 0.3f;
-            KaijuTraitLibrary.aquaticWeight += 0.9f;
-            KaijuTraitLibrary.reptileWeight -= 0.3f;
+            BroodMotherData.motherBellySaturation += 1.5f;
+            BroodMotherData.mammalWeight -= 0.3f;
+            BroodMotherData.avianWeight -= 0.3f;
+            BroodMotherData.aquaticWeight += 0.9f;
+            BroodMotherData.reptileWeight -= 0.3f;
 
-            KaijuTraitLibrary.commonWeight -= 0.32f;
-            KaijuTraitLibrary.uncommonWeight += 0.75f;
-            KaijuTraitLibrary.rareWeight -= 0.22f;
-            KaijuTraitLibrary.legendaryWeight -= 0.21f;
+            BroodMotherData.commonWeight -= 0.32f;
+            BroodMotherData.uncommonWeight += 0.75f;
+            BroodMotherData.rareWeight -= 0.22f;
+            BroodMotherData.legendaryWeight -= 0.21f;
 
             CapMinMaxWeights();
         }
@@ -511,14 +545,14 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 2.0f;
-            KaijuTraitLibrary.mammalWeight -= 0.4f;
-            KaijuTraitLibrary.avianWeight -= 0.4f;
-            KaijuTraitLibrary.aquaticWeight += 1.2f;
-            KaijuTraitLibrary.reptileWeight -= 0.4f;
+            BroodMotherData.motherBellySaturation += 2.0f;
+            BroodMotherData.mammalWeight -= 0.4f;
+            BroodMotherData.avianWeight -= 0.4f;
+            BroodMotherData.aquaticWeight += 1.2f;
+            BroodMotherData.reptileWeight -= 0.4f;
 
-            KaijuTraitLibrary.commonWeight -= 0.3f;
-            KaijuTraitLibrary.uncommonWeight += 0.3f;
+            BroodMotherData.commonWeight -= 0.3f;
+            BroodMotherData.uncommonWeight += 0.3f;
 
             CapMinMaxWeights();
         }
@@ -529,11 +563,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.5f;
-            KaijuTraitLibrary.mammalWeight -= 0.1f;
-            KaijuTraitLibrary.avianWeight -= 0.1f;
-            KaijuTraitLibrary.aquaticWeight -= 0.1f;
-            KaijuTraitLibrary.reptileWeight += 0.3f;
+            BroodMotherData.motherBellySaturation += 0.5f;
+            BroodMotherData.mammalWeight -= 0.1f;
+            BroodMotherData.avianWeight -= 0.1f;
+            BroodMotherData.aquaticWeight -= 0.1f;
+            BroodMotherData.reptileWeight += 0.3f;
 
             CapMinMaxWeights();
         }
@@ -543,16 +577,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 1.0f;
-            KaijuTraitLibrary.mammalWeight -= 0.2f;
-            KaijuTraitLibrary.avianWeight -= 0.2f;
-            KaijuTraitLibrary.aquaticWeight -= 0.2f;
-            KaijuTraitLibrary.reptileWeight -= 0.6f;
+            BroodMotherData.motherBellySaturation += 1.0f;
+            BroodMotherData.mammalWeight -= 0.2f;
+            BroodMotherData.avianWeight -= 0.2f;
+            BroodMotherData.aquaticWeight -= 0.2f;
+            BroodMotherData.reptileWeight -= 0.6f;
 
-            KaijuTraitLibrary.commonWeight -= 0.22f;
-            KaijuTraitLibrary.uncommonWeight += 0.5f;
-            KaijuTraitLibrary.rareWeight -= 0.12f;
-            KaijuTraitLibrary.legendaryWeight -= 0.16f;
+            BroodMotherData.commonWeight -= 0.22f;
+            BroodMotherData.uncommonWeight += 0.5f;
+            BroodMotherData.rareWeight -= 0.12f;
+            BroodMotherData.legendaryWeight -= 0.16f;
 
             CapMinMaxWeights();
         }
@@ -562,16 +596,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 1.5f;
-            KaijuTraitLibrary.mammalWeight -= 0.3f;
-            KaijuTraitLibrary.avianWeight -= 0.3f;
-            KaijuTraitLibrary.aquaticWeight -= 0.3f;
-            KaijuTraitLibrary.reptileWeight += 0.9f;
+            BroodMotherData.motherBellySaturation += 1.5f;
+            BroodMotherData.mammalWeight -= 0.3f;
+            BroodMotherData.avianWeight -= 0.3f;
+            BroodMotherData.aquaticWeight -= 0.3f;
+            BroodMotherData.reptileWeight += 0.9f;
 
-            KaijuTraitLibrary.commonWeight -= 0.32f;
-            KaijuTraitLibrary.uncommonWeight += 0.75f;
-            KaijuTraitLibrary.rareWeight -= 0.22f;
-            KaijuTraitLibrary.legendaryWeight -= 0.21f;
+            BroodMotherData.commonWeight -= 0.32f;
+            BroodMotherData.uncommonWeight += 0.75f;
+            BroodMotherData.rareWeight -= 0.22f;
+            BroodMotherData.legendaryWeight -= 0.21f;
 
             CapMinMaxWeights();
         }
@@ -580,14 +614,14 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 2.0f;
-            KaijuTraitLibrary.mammalWeight -= 0.4f;
-            KaijuTraitLibrary.avianWeight -= 0.4f;
-            KaijuTraitLibrary.aquaticWeight -= 0.4f;
-            KaijuTraitLibrary.reptileWeight += 1.2f;
+            BroodMotherData.motherBellySaturation += 2.0f;
+            BroodMotherData.mammalWeight -= 0.4f;
+            BroodMotherData.avianWeight -= 0.4f;
+            BroodMotherData.aquaticWeight -= 0.4f;
+            BroodMotherData.reptileWeight += 1.2f;
 
-            KaijuTraitLibrary.commonWeight -= 0.3f;
-            KaijuTraitLibrary.uncommonWeight += 0.3f;
+            BroodMotherData.commonWeight -= 0.3f;
+            BroodMotherData.uncommonWeight += 0.3f;
 
             CapMinMaxWeights();
         }
@@ -600,11 +634,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.3f;
-            KaijuTraitLibrary.mammalWeight += 5.55f;
-            KaijuTraitLibrary.avianWeight -= 1.85f;
-            KaijuTraitLibrary.aquaticWeight -= 1.85f;
-            KaijuTraitLibrary.reptileWeight -= 1.85f;
+            BroodMotherData.motherBellySaturation += 0.3f;
+            BroodMotherData.mammalWeight += 5.55f;
+            BroodMotherData.avianWeight -= 1.85f;
+            BroodMotherData.aquaticWeight -= 1.85f;
+            BroodMotherData.reptileWeight -= 1.85f;
 
             CapMinMaxWeights();
         }
@@ -614,16 +648,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.6f;
-            KaijuTraitLibrary.mammalWeight += 3.0f;
-            KaijuTraitLibrary.avianWeight += 0.5f;
-            KaijuTraitLibrary.aquaticWeight -= 1.5f;
-            KaijuTraitLibrary.reptileWeight -= 2.0f;
+            BroodMotherData.motherBellySaturation += 0.6f;
+            BroodMotherData.mammalWeight += 3.0f;
+            BroodMotherData.avianWeight += 0.5f;
+            BroodMotherData.aquaticWeight -= 1.5f;
+            BroodMotherData.reptileWeight -= 2.0f;
 
-            KaijuTraitLibrary.commonWeight -= 2.25f;
-            KaijuTraitLibrary.uncommonWeight += 1.5f;
-            KaijuTraitLibrary.rareWeight += 0.5f;
-            KaijuTraitLibrary.legendaryWeight += 0.25f;
+            BroodMotherData.commonWeight -= 2.25f;
+            BroodMotherData.uncommonWeight += 1.5f;
+            BroodMotherData.rareWeight += 0.5f;
+            BroodMotherData.legendaryWeight += 0.25f;
 
             CapMinMaxWeights();
         }
@@ -633,16 +667,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.9f;
-            KaijuTraitLibrary.mammalWeight += 5.0f;
-            KaijuTraitLibrary.avianWeight += 1.5f;
-            KaijuTraitLibrary.aquaticWeight += 0.5f;
-            KaijuTraitLibrary.reptileWeight -= 7.0f;
+            BroodMotherData.motherBellySaturation += 0.9f;
+            BroodMotherData.mammalWeight += 5.0f;
+            BroodMotherData.avianWeight += 1.5f;
+            BroodMotherData.aquaticWeight += 0.5f;
+            BroodMotherData.reptileWeight -= 7.0f;
 
-            KaijuTraitLibrary.commonWeight -= 1.5f;
-            KaijuTraitLibrary.uncommonWeight -= 0.5f;
-            KaijuTraitLibrary.rareWeight += 1.5f;
-            KaijuTraitLibrary.legendaryWeight += 0.5f;
+            BroodMotherData.commonWeight -= 1.5f;
+            BroodMotherData.uncommonWeight -= 0.5f;
+            BroodMotherData.rareWeight += 1.5f;
+            BroodMotherData.legendaryWeight += 0.5f;
 
             CapMinMaxWeights();
         }
@@ -653,11 +687,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.3f;
-            KaijuTraitLibrary.avianWeight += 5.55f;
-            KaijuTraitLibrary.mammalWeight -= 1.85f;
-            KaijuTraitLibrary.aquaticWeight -= 1.85f;
-            KaijuTraitLibrary.reptileWeight -= 1.85f;
+            BroodMotherData.motherBellySaturation += 0.3f;
+            BroodMotherData.avianWeight += 5.55f;
+            BroodMotherData.mammalWeight -= 1.85f;
+            BroodMotherData.aquaticWeight -= 1.85f;
+            BroodMotherData.reptileWeight -= 1.85f;
 
             CapMinMaxWeights();
         }
@@ -667,16 +701,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.6f;
-            KaijuTraitLibrary.avianWeight += 3.0f;
-            KaijuTraitLibrary.mammalWeight += 0.5f;
-            KaijuTraitLibrary.reptileWeight -= 1.5f;
-            KaijuTraitLibrary.aquaticWeight -= 2.0f;
+            BroodMotherData.motherBellySaturation += 0.6f;
+            BroodMotherData.avianWeight += 3.0f;
+            BroodMotherData.mammalWeight += 0.5f;
+            BroodMotherData.reptileWeight -= 1.5f;
+            BroodMotherData.aquaticWeight -= 2.0f;
 
-            KaijuTraitLibrary.commonWeight -= 2.25f;
-            KaijuTraitLibrary.uncommonWeight += 1.5f;
-            KaijuTraitLibrary.rareWeight += 0.5f;
-            KaijuTraitLibrary.legendaryWeight += 0.25f;
+            BroodMotherData.commonWeight -= 2.25f;
+            BroodMotherData.uncommonWeight += 1.5f;
+            BroodMotherData.rareWeight += 0.5f;
+            BroodMotherData.legendaryWeight += 0.25f;
 
             CapMinMaxWeights();
         }
@@ -686,16 +720,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.9f;
-            KaijuTraitLibrary.avianWeight += 5.0f;
-            KaijuTraitLibrary.mammalWeight += 1.5f;
-            KaijuTraitLibrary.reptileWeight += 0.5f;
-            KaijuTraitLibrary.aquaticWeight -= 7.0f;
+            BroodMotherData.motherBellySaturation += 0.9f;
+            BroodMotherData.avianWeight += 5.0f;
+            BroodMotherData.mammalWeight += 1.5f;
+            BroodMotherData.reptileWeight += 0.5f;
+            BroodMotherData.aquaticWeight -= 7.0f;
 
-            KaijuTraitLibrary.commonWeight -= 1.5f;
-            KaijuTraitLibrary.uncommonWeight -= 0.5f;
-            KaijuTraitLibrary.rareWeight += 1.5f;
-            KaijuTraitLibrary.legendaryWeight += 0.5f;
+            BroodMotherData.commonWeight -= 1.5f;
+            BroodMotherData.uncommonWeight -= 0.5f;
+            BroodMotherData.rareWeight += 1.5f;
+            BroodMotherData.legendaryWeight += 0.5f;
 
             CapMinMaxWeights();
         }
@@ -706,11 +740,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.3f;
-            KaijuTraitLibrary.aquaticWeight += 5.55f;
-            KaijuTraitLibrary.avianWeight -= 1.85f;
-            KaijuTraitLibrary.mammalWeight -= 1.85f;
-            KaijuTraitLibrary.reptileWeight -= 1.85f;
+            BroodMotherData.motherBellySaturation += 0.3f;
+            BroodMotherData.aquaticWeight += 5.55f;
+            BroodMotherData.avianWeight -= 1.85f;
+            BroodMotherData.mammalWeight -= 1.85f;
+            BroodMotherData.reptileWeight -= 1.85f;
 
             CapMinMaxWeights();
         }
@@ -720,16 +754,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.6f;
-            KaijuTraitLibrary.aquaticWeight += 3.0f;
-            KaijuTraitLibrary.reptileWeight += 0.5f;
-            KaijuTraitLibrary.mammalWeight -= 1.5f;
-            KaijuTraitLibrary.avianWeight -= 2.0f;
+            BroodMotherData.motherBellySaturation += 0.6f;
+            BroodMotherData.aquaticWeight += 3.0f;
+            BroodMotherData.reptileWeight += 0.5f;
+            BroodMotherData.mammalWeight -= 1.5f;
+            BroodMotherData.avianWeight -= 2.0f;
 
-            KaijuTraitLibrary.commonWeight -= 2.25f;
-            KaijuTraitLibrary.uncommonWeight += 1.5f;
-            KaijuTraitLibrary.rareWeight += 0.5f;
-            KaijuTraitLibrary.legendaryWeight += 0.25f;
+            BroodMotherData.commonWeight -= 2.25f;
+            BroodMotherData.uncommonWeight += 1.5f;
+            BroodMotherData.rareWeight += 0.5f;
+            BroodMotherData.legendaryWeight += 0.25f;
 
             CapMinMaxWeights();
         }
@@ -739,16 +773,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.9f;
-            KaijuTraitLibrary.aquaticWeight += 5.0f;
-            KaijuTraitLibrary.reptileWeight += 1.5f;
-            KaijuTraitLibrary.mammalWeight += 0.5f;
-            KaijuTraitLibrary.avianWeight -= 7.0f;
+            BroodMotherData.motherBellySaturation += 0.9f;
+            BroodMotherData.aquaticWeight += 5.0f;
+            BroodMotherData.reptileWeight += 1.5f;
+            BroodMotherData.mammalWeight += 0.5f;
+            BroodMotherData.avianWeight -= 7.0f;
 
-            KaijuTraitLibrary.commonWeight -= 1.5f;
-            KaijuTraitLibrary.uncommonWeight -= 0.5f;
-            KaijuTraitLibrary.rareWeight += 1.5f;
-            KaijuTraitLibrary.legendaryWeight += 0.5f;
+            BroodMotherData.commonWeight -= 1.5f;
+            BroodMotherData.uncommonWeight -= 0.5f;
+            BroodMotherData.rareWeight += 1.5f;
+            BroodMotherData.legendaryWeight += 0.5f;
 
             CapMinMaxWeights();
         }
@@ -758,11 +792,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.3f;
-            KaijuTraitLibrary.reptileWeight += 5.55f;
-            KaijuTraitLibrary.avianWeight -= 1.85f;
-            KaijuTraitLibrary.aquaticWeight -= 1.85f;
-            KaijuTraitLibrary.mammalWeight -= 1.85f;
+            BroodMotherData.motherBellySaturation += 0.3f;
+            BroodMotherData.reptileWeight += 5.55f;
+            BroodMotherData.avianWeight -= 1.85f;
+            BroodMotherData.aquaticWeight -= 1.85f;
+            BroodMotherData.mammalWeight -= 1.85f;
 
             CapMinMaxWeights();
         }
@@ -772,16 +806,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.6f;
-            KaijuTraitLibrary.reptileWeight += 3.0f;
-            KaijuTraitLibrary.aquaticWeight += 0.5f;
-            KaijuTraitLibrary.avianWeight -= 1.5f;
-            KaijuTraitLibrary.mammalWeight -= 2.0f;
+            BroodMotherData.motherBellySaturation += 0.6f;
+            BroodMotherData.reptileWeight += 3.0f;
+            BroodMotherData.aquaticWeight += 0.5f;
+            BroodMotherData.avianWeight -= 1.5f;
+            BroodMotherData.mammalWeight -= 2.0f;
 
-            KaijuTraitLibrary.commonWeight -= 2.25f;
-            KaijuTraitLibrary.uncommonWeight += 1.5f;
-            KaijuTraitLibrary.rareWeight += 0.5f;
-            KaijuTraitLibrary.legendaryWeight += 0.25f;
+            BroodMotherData.commonWeight -= 2.25f;
+            BroodMotherData.uncommonWeight += 1.5f;
+            BroodMotherData.rareWeight += 0.5f;
+            BroodMotherData.legendaryWeight += 0.25f;
 
             CapMinMaxWeights();
         }
@@ -791,16 +825,16 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.9f;
-            KaijuTraitLibrary.reptileWeight += 5.0f;
-            KaijuTraitLibrary.aquaticWeight += 1.5f;
-            KaijuTraitLibrary.avianWeight += 0.5f;
-            KaijuTraitLibrary.mammalWeight -= 7.0f;
+            BroodMotherData.motherBellySaturation += 0.9f;
+            BroodMotherData.reptileWeight += 5.0f;
+            BroodMotherData.aquaticWeight += 1.5f;
+            BroodMotherData.avianWeight += 0.5f;
+            BroodMotherData.mammalWeight -= 7.0f;
 
-            KaijuTraitLibrary.commonWeight -= 1.5f;
-            KaijuTraitLibrary.uncommonWeight -= 0.5f;
-            KaijuTraitLibrary.rareWeight += 1.5f;
-            KaijuTraitLibrary.legendaryWeight += 0.5f;
+            BroodMotherData.commonWeight -= 1.5f;
+            BroodMotherData.uncommonWeight -= 0.5f;
+            BroodMotherData.rareWeight += 1.5f;
+            BroodMotherData.legendaryWeight += 0.5f;
 
             CapMinMaxWeights();
         }
@@ -811,11 +845,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.3f;
-            KaijuTraitLibrary.commonWeight -= 6.5f;
-            KaijuTraitLibrary.uncommonWeight += 4.0f;
-            KaijuTraitLibrary.rareWeight += 2.0f;
-            KaijuTraitLibrary.legendaryWeight += 0.5f;
+            BroodMotherData.motherBellySaturation += 0.3f;
+            BroodMotherData.commonWeight -= 6.5f;
+            BroodMotherData.uncommonWeight += 4.0f;
+            BroodMotherData.rareWeight += 2.0f;
+            BroodMotherData.legendaryWeight += 0.5f;
 
             CapMinMaxWeights();
         }
@@ -825,10 +859,10 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 0.6f;
-            KaijuTraitLibrary.commonWeight -= 10.5f;
-            KaijuTraitLibrary.uncommonWeight += 8.0f;
-            KaijuTraitLibrary.rareWeight += 2.5f;
+            BroodMotherData.motherBellySaturation += 0.6f;
+            BroodMotherData.commonWeight -= 10.5f;
+            BroodMotherData.uncommonWeight += 8.0f;
+            BroodMotherData.rareWeight += 2.5f;
 
             CapMinMaxWeights();
         }
@@ -838,11 +872,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 1.0f;
-            KaijuTraitLibrary.commonWeight -= 8.0f;
-            KaijuTraitLibrary.uncommonWeight += 3.0f;
-            KaijuTraitLibrary.rareWeight += 5.0f;
-            KaijuTraitLibrary.legendaryWeight += 2.0f;
+            BroodMotherData.motherBellySaturation += 1.0f;
+            BroodMotherData.commonWeight -= 8.0f;
+            BroodMotherData.uncommonWeight += 3.0f;
+            BroodMotherData.rareWeight += 5.0f;
+            BroodMotherData.legendaryWeight += 2.0f;
 
             CapMinMaxWeights();
         }
@@ -851,11 +885,11 @@ public class MotherManager : MonoBehaviour
     {
         if (readyToFeed)
         {
-            KaijuTraitLibrary.motherBellySaturation += 8.0f;
-            KaijuTraitLibrary.commonWeight -= 7.5f;
-            KaijuTraitLibrary.uncommonWeight -= 2.0f;
-            KaijuTraitLibrary.rareWeight += 3.0f;
-            KaijuTraitLibrary.legendaryWeight += 6.5f;
+            BroodMotherData.motherBellySaturation += 8.0f;
+            BroodMotherData.commonWeight -= 7.5f;
+            BroodMotherData.uncommonWeight -= 2.0f;
+            BroodMotherData.rareWeight += 3.0f;
+            BroodMotherData.legendaryWeight += 6.5f;
 
             CapMinMaxWeights();
         }
