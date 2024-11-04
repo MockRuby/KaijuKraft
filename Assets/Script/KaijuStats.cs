@@ -50,7 +50,7 @@ public class KaijuStats : MonoBehaviour
 
     private void Start()
     {
-        focused = GameObject.FindGameObjectWithTag("GameManager").GetComponent<KaijuFocus>();
+     //   focused = GameObject.FindGameObjectWithTag("GameManager").GetComponent<KaijuFocus>();
     }
 
     // Update is called once per frame
@@ -80,10 +80,10 @@ public class KaijuStats : MonoBehaviour
             egg.SetActive(false);
             juv.SetActive(false);
             adult.SetActive(true);
-            if (triggerMature)
+            /*if (triggerMature)
             {
                 kaiGen.MaturizeKaiju();
-            }
+            }*/
         }
 
         // Check for key inputs to feed the Kaiju with different types of food
@@ -193,8 +193,8 @@ public class KaijuStats : MonoBehaviour
         prevSystemTime = currentSystemTime;
     }
 
-    private void OnMouseDown()
+    /*private void OnMouseDown()
     {
         focused.focusedKaiju = gameObject;
-    }
+    }*/
 }

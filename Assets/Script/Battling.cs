@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,9 @@ public class Battling : MonoBehaviour
 
     public GameObject attackTextKaiju1;
     public GameObject attackTextKaiju2;
+
+    public TextMeshProUGUI playerWin;
+
 
     private void Start()
     {
@@ -70,16 +74,22 @@ public class Battling : MonoBehaviour
         if (0 >= kaiju2.currentHealth)
         {
             Debug.Log("Kaiju 1 wins the battle!");
+            playerWin.gameObject.SetActive(true);
+            playerWin.text = "You Win";
             startBattle = false;
         }
         else if (0 >= kaiju1.currentHealth)
         {
             Debug.Log("Kaiju 2 wins the battle!");
+            playerWin.gameObject.SetActive(true);
+            playerWin.text = "You Loose";
             startBattle = false;
         }
         else if (kaiju1.currentHealth <= 0 && kaiju2.currentHealth <= 0)
         {
             Debug.Log("It's a tie!");
+            playerWin.gameObject.SetActive(true);
+            playerWin.text = "You Tie";
             startBattle = false;
         }
     }

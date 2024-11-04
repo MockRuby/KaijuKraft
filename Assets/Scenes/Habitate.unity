@@ -3713,7 +3713,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a5d536a2e74a7445bc76a74c34a40f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  focusedKaiju: {fileID: 0}
+  focusedKaiju: {fileID: 5710882837614627659}
   buttons:
   - {fileID: 1835703018}
   - {fileID: 887354778}
@@ -6205,6 +6205,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8653719598885068355, guid: 9f6340973ef2897479374af7a49ec76c,
         type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 9f6340973ef2897479374af7a49ec76c,
+        type: 3}
       propertyPath: m_TagString
       value: Untagged
       objectReference: {fileID: 0}
@@ -6827,7 +6832,7 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8653719598885068355, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
