@@ -47,7 +47,7 @@ public static class KaijuTraitLibrary
         "Legendary"
     };
     
-    public static List<string> EggShellColorPrimary = new List<string>
+    public static List<string> eggShellColorPrimary = new List<string>
     {
         "#FFE8CC", //0 - cream: mammal
         "#FFF788", //1 - gold: avian
@@ -55,7 +55,7 @@ public static class KaijuTraitLibrary
         "#AAF600" //3 - lime: reptile
     };
 
-    public static List<string> EggShellColorSecondary = new List<string>
+    public static List<string> eggShellColorSecondary = new List<string>
     {
         "#00EF31", //0 - green: common
         "#1C76FF", //1 - blue: uncommon
@@ -63,7 +63,7 @@ public static class KaijuTraitLibrary
         "#FF6900" //3 - orange: legendary
     };
 
-    public static List<string> KaijuColorBase = new List<string>
+    public static List<string> kaijuColorBase = new List<string>
     {
         "#FFFFFF", //0 -----white-----bright/soft colors
         "#FFBA5B", //1 ginger
@@ -81,7 +81,7 @@ public static class KaijuTraitLibrary
         "#6536A2" //13 purple
     };
 
-    public static List<string> KaijuColorSecondary = new List<string> //exclude black if base is black
+    public static List<string> kaijuColorSecondary = new List<string> //exclude black if base is black
     {
         "#3A3E44", //0 black
         "#743318", //1 autumn
@@ -99,7 +99,7 @@ public static class KaijuTraitLibrary
         "#491092" //13 purple
     };
 
-    public static List<string> KaijuColorTertiary = new List<string> //exclude white if base is white, exclude black if base/secondary is black; i cannot make them anymore black or white without sacrificing details
+    public static List<string> kaijuColorTertiary = new List<string> //exclude white if base is white, exclude black if base/secondary is black; i cannot make them anymore black or white without sacrificing details
     {
         "#FFFFFF", //0 white
         "#FFC52A", //1 ginger
@@ -117,7 +117,7 @@ public static class KaijuTraitLibrary
         "#3A3E44" //13 black
     };
 
-    public static List<string> KaijuEyeColor = new List<string>
+    public static List<string> kaijuEyeColor = new List<string>
     {
         //common
         "#FFC23B", //0 amber
@@ -212,7 +212,7 @@ public static class KaijuTraitLibrary
         {
             newKaijuTypeID = 3;
         }
-        newKaijuEggBaseColor = EggShellColorPrimary[newKaijuTypeID];
+        newKaijuEggBaseColor = eggShellColorPrimary[newKaijuTypeID];
 
         if (rarityRoll < commonCap)
         {
@@ -230,7 +230,7 @@ public static class KaijuTraitLibrary
         {
             newKaijuRarityID = 3;
         }
-        newKaijuEggSecondaryColor = EggShellColorSecondary[newKaijuRarityID];
+        newKaijuEggSecondaryColor = eggShellColorSecondary[newKaijuRarityID];
 
         KaijuGenePick();
     }
@@ -238,33 +238,33 @@ public static class KaijuTraitLibrary
     public static void KaijuColorPicks()
     {
         newKaijuBaseColorID = Random.Range(0, 14);
-        newKaijuBaseColor = KaijuColorBase[newKaijuBaseColorID];
+        newKaijuBaseColor = kaijuColorBase[newKaijuBaseColorID];
 
         if (newKaijuBaseColorID == 7)
         {
             newKaijuSecondaryColorID = Random.Range(1, 14);
-            newKaijuSecondaryColor = KaijuColorSecondary[newKaijuSecondaryColorID];
+            newKaijuSecondaryColor = kaijuColorSecondary[newKaijuSecondaryColorID];
         }
         else
         {
             newKaijuSecondaryColorID = Random.Range(0, 14);
-            newKaijuSecondaryColor = KaijuColorSecondary[newKaijuSecondaryColorID];
+            newKaijuSecondaryColor = kaijuColorSecondary[newKaijuSecondaryColorID];
         }
 
         if (newKaijuBaseColorID == 0)
         {
             newKaijuTertiaryColorID = Random.Range(1, 14);
-            newKaijuTertiaryColor = KaijuColorTertiary[newKaijuTertiaryColorID];
+            newKaijuTertiaryColor = kaijuColorTertiary[newKaijuTertiaryColorID];
         }
         else if (newKaijuBaseColorID == 7 || newKaijuSecondaryColorID == 0)
         {
             newKaijuTertiaryColorID = Random.Range(0, 13);
-            newKaijuTertiaryColor = KaijuColorTertiary[newKaijuTertiaryColorID];
+            newKaijuTertiaryColor = kaijuColorTertiary[newKaijuTertiaryColorID];
         }
         else
         {
             newKaijuTertiaryColorID = Random.Range(0, 14);
-            newKaijuTertiaryColor = KaijuColorTertiary[newKaijuTertiaryColorID];
+            newKaijuTertiaryColor = kaijuColorTertiary[newKaijuTertiaryColorID];
         }
 
         KaijuEyeColorPicks();
@@ -294,14 +294,14 @@ public static class KaijuTraitLibrary
         if (newKaijuRarityID == 3)
         {
             newKaijuEyeRightColorID = Random.Range(0, 20);
-            newKaijuEyeLeftColor = KaijuEyeColor[newKaijuEyeLeftColorID];
-            newKaijuEyeRightColor = KaijuEyeColor[newKaijuEyeRightColorID];
+            newKaijuEyeLeftColor = kaijuEyeColor[newKaijuEyeLeftColorID];
+            newKaijuEyeRightColor = kaijuEyeColor[newKaijuEyeRightColorID];
         }
         else
         {
             newKaijuEyeRightColorID = newKaijuEyeLeftColorID;
-            newKaijuEyeLeftColor = KaijuEyeColor[newKaijuEyeLeftColorID];
-            newKaijuEyeRightColor = KaijuEyeColor[newKaijuEyeRightColorID];
+            newKaijuEyeLeftColor = kaijuEyeColor[newKaijuEyeLeftColorID];
+            newKaijuEyeRightColor = kaijuEyeColor[newKaijuEyeRightColorID];
         }
     }
 
@@ -428,9 +428,9 @@ public static class KaijuTraitLibrary
 
     public static void BuildAndStoreSeed(int typeID, int rarityID, int geneID, int baseColorID, int secondaryColorID, int tertiaryColorID, int eyeLeftColorID, int eyeRightColorID, int attackValue, int defenceValue, int healthValue, int speedValue)
     {
-        newSeed.Append(typeID.ToString("D2"));
-        newSeed.Append(rarityID.ToString("D2"));
-        newSeed.Append(geneID.ToString("D2"));
+        newSeed.Append(typeID.ToString());
+        newSeed.Append(rarityID.ToString());
+        newSeed.Append(geneID.ToString());
         newSeed.Append(baseColorID.ToString("D2"));
         newSeed.Append(secondaryColorID.ToString("D2"));
         newSeed.Append(tertiaryColorID.ToString("D2"));

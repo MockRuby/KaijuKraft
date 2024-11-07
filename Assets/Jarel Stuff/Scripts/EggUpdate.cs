@@ -8,7 +8,6 @@ public class EggUpdate : MonoBehaviour
     // Start is called before the first frame update
     public void DestroyOnHatch()
     {
-        kaiGen.KaijuGenePick();
         gameObject.SetActive(false);
     }
 }

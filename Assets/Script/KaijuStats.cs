@@ -14,6 +14,7 @@ public class KaijuStats : MonoBehaviour
     public int attack; // Attack points of the Kaiju
     public int defence; // Defence points of the Kaiju
     public int speed; // Speed of the Kaiju
+    public string seed;
 
     public Animator eggAnimator;
 
@@ -46,11 +47,12 @@ public class KaijuStats : MonoBehaviour
 
     public KaijuGeneration kaiGen;
 
-    bool triggerMature = false;
+    bool isAdult = false;
 
     private void Start()
     {
      //   focused = GameObject.FindGameObjectWithTag("GameManager").GetComponent<KaijuFocus>();
+
     }
 
     // Update is called once per frame
@@ -80,10 +82,6 @@ public class KaijuStats : MonoBehaviour
             egg.SetActive(false);
             juv.SetActive(false);
             adult.SetActive(true);
-            /*if (triggerMature)
-            {
-                kaiGen.MaturizeKaiju();
-            }*/
         }
 
         // Check for key inputs to feed the Kaiju with different types of food
@@ -173,7 +171,6 @@ public class KaijuStats : MonoBehaviour
         if (growth >= 100)
         {
             stageOfLife = StagesOfLife.Adult;
-            triggerMature = true;
             growth = 0;
             // Increase stats based on collected food
             health += 10 + generalFood + foodHealth * 5;
@@ -187,7 +184,13 @@ public class KaijuStats : MonoBehaviour
             foodHealth = 0;
             foodDefence = 0;
             foodSpeed = 0;
-            
+
+            if (!isAdult)
+            {
+                kaiGen.MaturizeKaiju();
+                isAdult = true;
+            }
+
         }
 
         prevSystemTime = currentSystemTime;

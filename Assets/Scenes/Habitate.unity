@@ -1378,7 +1378,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 427712588}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.7002125, w: -0.7139345}
+  m_LocalRotation: {x: -0, y: -0, z: -0.7002151, w: -0.713932}
   m_LocalPosition: {x: 1.92, y: -0.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5899,7 +5899,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1973044416}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.7469379, w: -0.6648939}
+  m_LocalRotation: {x: -0, y: -0, z: -0.74695617, w: -0.6648733}
   m_LocalPosition: {x: 1.92, y: -0.03, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6206,7 +6206,7 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: 9f6340973ef2897479374af7a49ec76c,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8653719598885068355, guid: 9f6340973ef2897479374af7a49ec76c,
         type: 3}
@@ -6832,7 +6832,7 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8653719598885068355, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
@@ -6847,12 +6847,12 @@ PrefabInstance:
     - target: {fileID: -7890263359705529449, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.120007835
+      value: 0.1200352
       objectReference: {fileID: 0}
     - target: {fileID: -7890263359705529449, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.992773
+      value: 0.99276966
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
@@ -6957,12 +6957,12 @@ PrefabInstance:
     - target: {fileID: -643325073362195155, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.052524157
+      value: 0.052527804
       objectReference: {fileID: 0}
     - target: {fileID: -643325073362195155, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.9986197
+      value: 0.9986195
       objectReference: {fileID: 0}
     - target: {fileID: 68914653012661931, guid: c86b2e21b45af134fbcb0f3ef6f41636,
         type: 3}
@@ -7111,8 +7111,6 @@ MonoBehaviour:
   - {fileID: 107676959}
   - {fileID: 1118621986}
   - {fileID: 2083908466}
-  kaijuRarityID: 0
-  kaijuRarityPick: 0
   kaijuJuvieCatGenesTabby: {fileID: 1909263222}
   kaijuJuvieCatGenesBicolor:
   - {fileID: 393593701}
@@ -7257,11 +7255,12 @@ MonoBehaviour:
   - {fileID: 294469988}
   - {fileID: 454109340}
   - {fileID: 1284862650}
-  - {fileID: 0}
-  eyeColorA: {fileID: 1953681413}
-  adultEyeColorA: {fileID: 1023046093}
-  eyeColorB: {fileID: 1789036539}
-  adultEyeColorB: {fileID: 2004763291}
+  eyeColorLeft:
+  - {fileID: 1953681413}
+  - {fileID: 1023046093}
+  eyeColorRight:
+  - {fileID: 1789036539}
+  - {fileID: 2004763291}
   kaijuAdultCatGenesTabby:
   - {fileID: 303031487}
   - {fileID: 12687961}
@@ -7365,15 +7364,7 @@ MonoBehaviour:
   - {fileID: 96082302}
   - {fileID: 605263776}
   - {fileID: 1408191802}
-  kaijuTypeID: 0
-  kaijuGeneID: 0
-  baseColorHex: 
-  secondaryColorHex: 
-  tertiaryColorHex: 
-  eyeColorLeftHex: 
-  eyeColorRightHex: 
-  eggTypeColorHex: 
-  eggRarityColorHex: 
+  seed: 
 --- !u!1 &5710882837614627659
 GameObject:
   m_ObjectHideFlags: 0

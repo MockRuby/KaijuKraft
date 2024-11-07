@@ -7,7 +7,6 @@ using UnityEngine;
 public class SavingKaiju : MonoBehaviour
 {
     public KaijuListData listData = new KaijuListData();
-    public KaijuTrait traits = new KaijuTrait();
 
     // Update is called once per411 frame
     void Update()
@@ -23,14 +22,6 @@ public class SavingKaiju : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.A))
         {
             BattleLoad();
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            SaveKaijuTrait();
-        }
-        else if (Input.GetKeyDown(KeyCode.E))
-        {
-            LoadKaijuTrait();
         }
     }
 
@@ -50,24 +41,6 @@ public class SavingKaiju : MonoBehaviour
         string jsonString = System.IO.File.ReadAllText(filepath);
         listData = JsonUtility.FromJson<KaijuListData>(jsonString);
         listData.LoadingAllKaijuData();
-        Debug.Log("KaijuLoaded");
-    }
-
-    public void SaveKaijuTrait()
-    {
-        traits.SaveTraits();
-        string filepath = Application.persistentDataPath + "/KaijuTraitData.json";
-        Debug.Log(filepath);
-        string jsonString = JsonUtility.ToJson(traits, true);
-        System.IO.File.WriteAllText(filepath, jsonString);
-        Debug.Log("KaijuSavedTraits");
-    }
-    public void LoadKaijuTrait()
-    {
-        string filepath = Application.persistentDataPath + "/KaijuTraitData.json";
-        string jsonString = System.IO.File.ReadAllText(filepath);
-        traits = JsonUtility.FromJson<KaijuTrait>(jsonString);
-        traits.LoadTraits();
         Debug.Log("KaijuLoaded");
     }
 
@@ -110,6 +83,8 @@ public class KaijuData
     public int localSpeed; // Speed of the Kaiju
     public float localGrowth; // Growth progress of the Kaiju
 
+    public string localSeed;
+
     public float localPrevSystemTime; // Previous system time for growth calculation
 
     // Food stats for the Kaiju
@@ -134,11 +109,13 @@ public class KaijuData
         localFoodDefence = stats.foodDefence;
         localFoodHealth = stats.foodHealth;
         localFoodSpeed = stats.foodSpeed;
+        localSeed = stats.seed;
         stageOfLifeForSave = stats.stageOfLife;
     }
 
     public void LoadData()
     {
+        KaijuGeneration gen = kaiju.GetComponent<KaijuGeneration>();
         stats.health = localHealth;
         stats.attack = localAttack;
         stats.defence = localDefence;
@@ -150,7 +127,9 @@ public class KaijuData
         stats.foodDefence = localFoodDefence;
         stats.foodHealth = localFoodHealth;
         stats.foodSpeed = localFoodSpeed;
+        stats.seed = localSeed;
         stats.stageOfLife = stageOfLifeForSave;
+        gen.ParseSeed();
     }
 }
 
@@ -178,35 +157,5 @@ public class KaijuListData
         {
             kaijuData.LoadData();
         }
-    }
-}
-[System.Serializable]
-public class KaijuTrait
-{
-    public GameObject kaiju;
-    public KaijuGeneration generation;
-    public string baseColorHexSave;
-    public string secondaryColorHexSave;
-    public string tertiaryColorHexSave;
-    public string eyeColorLeftHexSave;
-    public string eyeColorRightHexSave;
-
-    public void SaveTraits()
-    {
-        baseColorHexSave = generation.baseColorHex;
-        secondaryColorHexSave = generation.secondaryColorHex;
-        tertiaryColorHexSave = generation.tertiaryColorHex;
-        eyeColorLeftHexSave = generation.eyeColorLeftHex;
-        eyeColorRightHexSave = generation.eyeColorRightHex;
-    }
-
-    public void LoadTraits()
-    {
-        generation.baseColorHex = baseColorHexSave;
-        generation.secondaryColorHex = secondaryColorHexSave;
-        generation.tertiaryColorHex = tertiaryColorHexSave;
-        generation.eyeColorLeftHex = eyeColorLeftHexSave;
-        generation.eyeColorRightHex = eyeColorRightHexSave;
-        generation.UpdateColour();
     }
 }

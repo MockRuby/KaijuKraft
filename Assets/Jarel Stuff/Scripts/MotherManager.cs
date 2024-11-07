@@ -150,11 +150,11 @@ public class MotherManager : MonoBehaviour
         eggBaseObj.SetActive(true);
         eggShellObj.SetActive(true);
 
-        if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.EggShellColorPrimary[KaijuTraitLibrary.newKaijuTypeID], out newColor))
+        if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.eggShellColorPrimary[KaijuTraitLibrary.newKaijuTypeID], out newColor))
         {
             eggBaseSprite.color = newColor;
         }
-        if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.EggShellColorSecondary[KaijuTraitLibrary.newKaijuRarityID], out newColor))
+        if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.eggShellColorSecondary[KaijuTraitLibrary.newKaijuRarityID], out newColor))
         {
             eggShellSprite.color = newColor;
         }

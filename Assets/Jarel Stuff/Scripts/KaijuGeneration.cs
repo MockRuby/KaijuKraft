@@ -13,8 +13,8 @@ public class KaijuGeneration : MonoBehaviour
 
     //Color indicates rarity
     public SpriteRenderer[] eggColorShell = new SpriteRenderer[8];
-    public int kaijuRarityID = 0; //replace once hatchery script is complete 0 - common, 1 - uncommon, 2 - rare, 3 - legendary
-    public int kaijuRarityPick = 0; //replace once hatchery script is complete
+    /*public int kaijuRarityID = 0; //replace once hatchery script is complete 0 - common, 1 - uncommon, 2 - rare, 3 - legendary
+    public int kaijuRarityPick = 0; //replace once hatchery script is complete*/
     
 
     //store game objects to turn active/inactive
@@ -29,13 +29,9 @@ public class KaijuGeneration : MonoBehaviour
 
     public SpriteRenderer[] baseColor = new SpriteRenderer[26];
     public SpriteRenderer[] secondaryColor = new SpriteRenderer[83];
-    public SpriteRenderer[] tertiaryColor = new SpriteRenderer[15];
-    public SpriteRenderer eyeColorA;
-    public SpriteRenderer adultEyeColorA;
-    public SpriteRenderer eyeColorB;
-    public SpriteRenderer adultEyeColorB;
-
-    bool heterochromaticChance = false;
+    public SpriteRenderer[] tertiaryColor = new SpriteRenderer[14];
+    public SpriteRenderer[] eyeColorLeft = new SpriteRenderer[2];
+    public SpriteRenderer[] eyeColorRight = new SpriteRenderer[2];
 
     public GameObject[] kaijuAdultCatGenesTabby = new GameObject[11];
     public GameObject[] kaijuAdultCatGenesBicolor = new GameObject[14];
@@ -46,37 +42,72 @@ public class KaijuGeneration : MonoBehaviour
     public GameObject[] kaijuAdultCatGenesPointed = new GameObject[13];
     public GameObject[] kaijuAdultCatGenesVan = new GameObject[5];
 
+    int x;
+    public string seed;
+    private int seedNum;
+
+    KaijuStats stats;
+
 
     //data to store
-    /// <summary>
-    /// Add if raised traits features are to be added
-    /// *insert variables here*
-    /// </summary>
-    public int kaijuTypeID; //replace once brood mother script is complete; 0 - mammal, 1 - avian, 2 - aquatic, 3 - reptilian
-    public int kaijuGeneID;
-    public string baseColorHex;
-    public string secondaryColorHex;
-    public string tertiaryColorHex;
-    public string eyeColorLeftHex;
-    public string eyeColorRightHex;
-    public string eggTypeColorHex;
-    public string eggRarityColorHex;
+    int kaijuTypeID;
+    int kaijuRarityID;
+    int kaijuGeneID;
+    int kaijuBaseColorID;
+    int kaijuSecondaryColorID;
+    int kaijuTertiaryColorID;
+    int kaijuEyeLeftColorID;
+    int kaijuEyeRightColorID;
 
     /// <summary>
     /// Will add more variables for kaiju traits
     /// </summary>
 
-    void Start()
+    public void ParseSeed()
     {
+        stats = gameObject.GetComponent<KaijuStats>();
         //create reference to hatchery script for IDs
-        //kaijuTypeID = Random.Range(0,4); 
-        kaijuTypeID = 0; //only 1 kaiju type available right now; remove/replace after brood mother script is complete
-        kaijuRarityPick = Random.Range(0,21); //remove/replace after brood mother script is complete
+        //kaijuTypeID = Random.Range(0,4);
+        seed = stats.seed;
+        stats = gameObject.GetComponent<KaijuStats>();
+        for (int i = 0; i < KaijuTraitLibrary.kaijuSeedList.Count; i++)
+        {
+            if (seed == KaijuTraitLibrary.kaijuSeedList[i])
+            {
+                seedNum = i;
+                return;
+            }
+        }
 
+        seed = KaijuTraitLibrary.kaijuSeedList[seedNum];
+        stats.seed = KaijuTraitLibrary.kaijuSeedList[seedNum];
+
+        kaijuTypeID = int.Parse(seed.Substring(0,1));
+        kaijuRarityID = int.Parse(seed.Substring(1,1));
+        kaijuGeneID = int.Parse(seed.Substring(2,1));
+        kaijuBaseColorID = int.Parse(seed.Substring(3,2));
+        kaijuSecondaryColorID = int.Parse(seed.Substring(5,2));
+        kaijuTertiaryColorID = int.Parse(seed.Substring(7,2));
+        kaijuEyeLeftColorID = int.Parse(seed.Substring(9,2));
+        kaijuEyeRightColorID = int.Parse(seed.Substring(11,2));
+        stats.attack = int.Parse(seed.Substring(13, 3));
+        stats.defence = int.Parse(seed.Substring(16, 3));
+        stats.health = int.Parse(seed.Substring(19, 3));
+        stats.speed = int.Parse(seed.Substring(22, 3));
+
+        KaijuUpdateAppearance();
+    }
+    void Update()
+    {
+        
+    }
+
+    public void KaijuUpdateAppearance()
+    {
         foreach (SpriteRenderer srColor in eggColorBase)
         {
             Color newColor;
-            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.EggShellColorPrimary[KaijuTraitLibrary.newKaijuTypeID], out newColor))
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.eggShellColorPrimary[kaijuTypeID], out newColor))
             {
                 srColor.color = newColor;
             }
@@ -89,7 +120,7 @@ public class KaijuGeneration : MonoBehaviour
         foreach (SpriteRenderer srColor in eggColorShell)
         {
             Color newColor;
-            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.EggShellColorSecondary[KaijuTraitLibrary.newKaijuRarityID], out newColor))
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.eggShellColorSecondary[kaijuRarityID], out newColor))
             {
                 srColor.color = newColor;
             }
@@ -98,20 +129,76 @@ public class KaijuGeneration : MonoBehaviour
                 Debug.LogError("Invalid hexcode");
             }
         }
-    }
-    void Update()
-    {
-        
-    }
 
-    public void KaijuGenePick()
-    {
-        KaijuBaseColorPick();
+        foreach (SpriteRenderer srColor in baseColor)
+        {
+            Color newColor;
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuColorBase[kaijuBaseColorID], out newColor))
+            {
+                srColor.color = newColor;
+            }
+            else
+            {
+                Debug.LogError("Invalid hexcode");
+            }
+        }
+
+        foreach (SpriteRenderer srColor in secondaryColor)
+        {
+            Color newColor;
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuColorSecondary[kaijuSecondaryColorID], out newColor))
+            {
+                srColor.color = newColor;
+            }
+            else
+            {
+                Debug.LogError("Invalid hexcode");
+            }
+        }
+
+        foreach (SpriteRenderer srColor in tertiaryColor)
+        {
+            Color newColor;
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuColorTertiary[kaijuTertiaryColorID], out newColor))
+            {
+                srColor.color = newColor;
+            }
+            else
+            {
+                Debug.LogError("Invalid hexcode");
+            }
+        }
+
+        foreach (SpriteRenderer srColor in eyeColorLeft)
+        {
+            Color newColor;
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuEyeColor[kaijuEyeLeftColorID], out newColor))
+            {
+                srColor.color = newColor;
+            }
+            else
+            {
+                Debug.LogError("Invalid hexcode");
+            }
+        }
+
+        foreach (SpriteRenderer srColor in eyeColorRight)
+        {
+            Color newColor;
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuEyeColor[kaijuEyeRightColorID], out newColor))
+            {
+                srColor.color = newColor;
+            }
+            else
+            {
+                Debug.LogError("Invalid hexcode");
+            }
+        }
+
         switch (kaijuGeneID) //default gene is 0; if 0, no additional code necessary
         {
             case 1:
                 kaijuJuvieCatGenesTabby.SetActive(true);
-                KaijuSecondaryColorPick();
                 break;
             case 2:
                 foreach (GameObject geneObject in kaijuJuvieCatGenesBicolor)
@@ -127,985 +214,30 @@ public class KaijuGeneration : MonoBehaviour
                 {
                     geneObject.SetActive(true);
                 }
-                KaijuSecondaryColorPick();
                 break;
             case 5:
                 kaijuJuvieCatGenesSpotted.SetActive(true);
-                KaijuSecondaryColorPick();
                 break;
             case 6:
                 foreach (GameObject geneObject in kaijuJuvieCatGenesCalico)
                 {
                     geneObject.SetActive(true);
                 }
-                KaijuSecondaryColorPick();
-                KaijuTertiaryColorPick();
                 break;
             case 7:
                 foreach (GameObject geneObject in kaijuJuvieCatGenesPointed)
                 {
                     geneObject.SetActive(true);
                 }
-                KaijuSecondaryColorPick();
                 break;
             case 8:
                 kaijuJuvieCatGenesVan.SetActive(true);
-                KaijuSecondaryColorPick();
-                heterochromaticChance = true;
-                break;
-            default:
-                break;
-        }
-
-        KaijuEyeColorPick();
-    }
-
-    public void KaijuBaseColorPick()
-    {
-        int baseColorID;
-        baseColorID = Random.Range(0, 5);
-        Color newBaseColor;
-
-        switch (baseColorID)
-        {
-            case 0:
-                baseColorHex = "#444444";
-                foreach (SpriteRenderer srBaseColor in baseColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(baseColorHex, out newBaseColor))
-                    {
-
-                        srBaseColor.color = newBaseColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 1:
-                baseColorHex = "#FFA500";
-                foreach (SpriteRenderer srBaseColor in baseColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(baseColorHex, out newBaseColor))
-                    {
-
-                        srBaseColor.color = newBaseColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 2:
-                baseColorHex = "#808080";
-                foreach (SpriteRenderer srBaseColor in baseColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(baseColorHex, out newBaseColor))
-                    {
-
-                        srBaseColor.color = newBaseColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 3:
-                baseColorHex = "#FFA500";
-                foreach (SpriteRenderer srBaseColor in baseColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(baseColorHex, out newBaseColor))
-                    {
-
-                        srBaseColor.color = newBaseColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 4:
-                baseColorHex = "#654321";
-                foreach (SpriteRenderer srBaseColor in baseColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(baseColorHex, out newBaseColor))
-                    {
-
-                        srBaseColor.color = newBaseColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
                 break;
             default:
                 break;
         }
     }
 
-    public void KaijuSecondaryColorPick()
-    {
-        int secondColorID;
-        secondColorID = Random.Range(0, 5);
-        Color newSecondColor;
-
-        switch (secondColorID)
-        {
-            case 0:
-                secondaryColorHex = "#C60000";
-                foreach (SpriteRenderer srSecondColor in secondaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(secondaryColorHex, out newSecondColor))
-                    {
-
-                        srSecondColor.color = newSecondColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 1:
-                secondaryColorHex = "#767676";
-                foreach (SpriteRenderer srSecondColor in secondaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(secondaryColorHex, out newSecondColor))
-                    {
-
-                        srSecondColor.color = newSecondColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 2:
-                secondaryColorHex = "#D75A00";
-                foreach (SpriteRenderer srSecondColor in secondaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(secondaryColorHex, out newSecondColor))
-                    {
-
-                        srSecondColor.color = newSecondColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 3:
-                secondaryColorHex = "#6A4F2F";
-                foreach (SpriteRenderer srSecondColor in secondaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(secondaryColorHex, out newSecondColor))
-                    {
-
-                        srSecondColor.color = newSecondColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 4:
-                secondaryColorHex = "#E3AF75";
-                foreach (SpriteRenderer srSecondColor in secondaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(secondaryColorHex, out newSecondColor))
-                    {
-
-                        srSecondColor.color = newSecondColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void KaijuTertiaryColorPick()
-    {
-        int thirdColorID;
-        thirdColorID = Random.Range(0, 5);
-        Color newThirdColor;
-
-        switch (thirdColorID)
-        {
-            case 0:
-                tertiaryColorHex = "#FFAFD2";
-                foreach (SpriteRenderer srThirdColor in tertiaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(tertiaryColorHex, out newThirdColor))
-                    {
-
-                        srThirdColor.color = newThirdColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 1:
-                tertiaryColorHex = "#FFD775";
-                foreach (SpriteRenderer srThirdColor in tertiaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(tertiaryColorHex, out newThirdColor))
-                    {
-
-                        srThirdColor.color = newThirdColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 2:
-                tertiaryColorHex = "#A0E2FF";
-                foreach (SpriteRenderer srThirdColor in tertiaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(tertiaryColorHex, out newThirdColor))
-                    {
-
-                        srThirdColor.color = newThirdColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 3:
-                tertiaryColorHex = "#FF8470";
-                foreach (SpriteRenderer srThirdColor in tertiaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(tertiaryColorHex, out newThirdColor))
-                    {
-
-                        srThirdColor.color = newThirdColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            case 4:
-                tertiaryColorHex = "#AB977D";
-                foreach (SpriteRenderer srThirdColor in tertiaryColor)
-                {
-                    if (ColorUtility.TryParseHtmlString(tertiaryColorHex, out newThirdColor))
-                    {
-
-                        srThirdColor.color = newThirdColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void KaijuEyeColorPick()
-    {
-        if (!heterochromaticChance)
-        {
-            int eyeColors;
-            eyeColors = Random.Range(0, 8);
-            Color newEyeColor;
-
-            switch (eyeColors)
-            {
-                case 0: //emerald
-                    eyeColorLeftHex = "#50C878";
-                    eyeColorRightHex = "#50C878";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 1: //gold
-                    eyeColorLeftHex = "#FFD700";
-                    eyeColorRightHex = "#FFD700";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 2: //blue
-                    eyeColorLeftHex = "#4682B4";
-                    eyeColorRightHex = "#4682B4";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 3: //hazel
-                    eyeColorLeftHex = "#8E7618";
-                    eyeColorRightHex = "#8E7618";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 4: //copper
-                    eyeColorLeftHex = "#B87333";
-                    eyeColorRightHex = "#B87333";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 5: //orange
-                    eyeColorLeftHex = "#FFA500";
-                    eyeColorRightHex = "#FFA500";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 6: //gray
-                    eyeColorLeftHex = "#BEBEBE";
-                    eyeColorRightHex = "#BEBEBE";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 7: //aqua
-                    eyeColorLeftHex = "#00FFFF";
-                    eyeColorRightHex = "#00FFFF";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            int eyeColorLeft;
-            int eyeColorRight;
-            eyeColorLeft = Random.Range(0, 8);
-            eyeColorRight = Random.Range(0, 8);
-            Color newEyeColor;
-
-            switch (eyeColorLeft)
-            {
-                case 0: //emerald
-                    eyeColorLeftHex = "#50C878";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 1: //gold
-                    eyeColorLeftHex = "#FFD700";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 2: //blue
-                    eyeColorLeftHex = "#4682B4";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 3: //hazel
-                    eyeColorLeftHex = "#8E7618";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 4: //copper
-                    eyeColorLeftHex = "#B87333";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 5: //orange
-                    eyeColorLeftHex = "#FFA500";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 6: //gray
-                    eyeColorLeftHex = "#BEBEBE";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 7: //aqua
-                    eyeColorLeftHex = "#00FFFF";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            switch (eyeColorRight)
-            {
-                case 0: //emerald
-                    eyeColorRightHex = "#50C878";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 1: //gold
-                    eyeColorRightHex = "#FFD700";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 2: //blue
-                    eyeColorRightHex = "#4682B4";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 3: //hazel
-                    eyeColorRightHex = "#8E7618";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 4: //copper
-                    eyeColorRightHex = "#B87333";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 5: //orange
-                    eyeColorRightHex = "#FFA500";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 6: //gray
-                    eyeColorRightHex = "#BEBEBE";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 7: //aqua
-                    eyeColorRightHex = "#00FFFF";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-
-    public void UpdateColour()
-    {
-          if (!heterochromaticChance)
-        {
-            int eyeColors;
-            eyeColors = Random.Range(0, 8);
-            Color newEyeColor;
-
-            switch (eyeColors)
-            {
-                case 0: //emerald
-                    eyeColorLeftHex = "#50C878";
-                    eyeColorRightHex = "#50C878";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 1: //gold
-                    eyeColorLeftHex = "#FFD700";
-                    eyeColorRightHex = "#FFD700";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 2: //blue
-                    eyeColorLeftHex = "#4682B4";
-                    eyeColorRightHex = "#4682B4";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 3: //hazel
-                    eyeColorLeftHex = "#8E7618";
-                    eyeColorRightHex = "#8E7618";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 4: //copper
-                    eyeColorLeftHex = "#B87333";
-                    eyeColorRightHex = "#B87333";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 5: //orange
-                    eyeColorLeftHex = "#FFA500";
-                    eyeColorRightHex = "#FFA500";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 6: //gray
-                    eyeColorLeftHex = "#BEBEBE";
-                    eyeColorRightHex = "#BEBEBE";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 7: //aqua
-                    eyeColorLeftHex = "#00FFFF";
-                    eyeColorRightHex = "#00FFFF";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            int eyeColorLeft;
-            int eyeColorRight;
-            eyeColorLeft = Random.Range(0, 8);
-            eyeColorRight = Random.Range(0, 8);
-            Color newEyeColor;
-
-            switch (eyeColorLeft)
-            {
-                case 0: //emerald
-                    eyeColorLeftHex = "#50C878";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 1: //gold
-                    eyeColorLeftHex = "#FFD700";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 2: //blue
-                    eyeColorLeftHex = "#4682B4";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 3: //hazel
-                    eyeColorLeftHex = "#8E7618";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 4: //copper
-                    eyeColorLeftHex = "#B87333";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 5: //orange
-                    eyeColorLeftHex = "#FFA500";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 6: //gray
-                    eyeColorLeftHex = "#BEBEBE";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 7: //aqua
-                    eyeColorLeftHex = "#00FFFF";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorLeftHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            switch (eyeColorRight)
-            {
-                case 0: //emerald
-                    eyeColorRightHex = "#50C878";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 1: //gold
-                    eyeColorRightHex = "#FFD700";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 2: //blue
-                    eyeColorRightHex = "#4682B4";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 3: //hazel
-                    eyeColorRightHex = "#8E7618";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 4: //copper
-                    eyeColorRightHex = "#B87333";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorA.color = newEyeColor;
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 5: //orange
-                    eyeColorRightHex = "#FFA500";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 6: //gray
-                    eyeColorRightHex = "#BEBEBE";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                case 7: //aqua
-                    eyeColorRightHex = "#00FFFF";
-
-                    if (ColorUtility.TryParseHtmlString(eyeColorRightHex, out newEyeColor))
-                    {
-                        eyeColorB.color = newEyeColor;
-                    }
-                    else
-                    {
-                        Debug.LogError("Invalid hexcode");
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
 
     public void MaturizeKaiju()
     {
