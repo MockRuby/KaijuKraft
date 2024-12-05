@@ -66,7 +66,7 @@ public class EggTimeManager : MonoBehaviour
             }
             else
             {
-                timerUpdate.text = KaijuTraitLibrary.kaijuRarityName[KaijuTraitLibrary.newKaijuRarityID] + " " + KaijuTraitLibrary.kaijuTypeName[KaijuTraitLibrary.newKaijuTypeID] + " Egg";
+                timerUpdate.text = KaijuTraitLibrary.instance.kaijuRarityName[KaijuTraitLibrary.instance.newKaijuRarityID] + " " + KaijuTraitLibrary.instance.kaijuTypeName[KaijuTraitLibrary.instance.newKaijuTypeID] + " Egg";
             }
         }
 

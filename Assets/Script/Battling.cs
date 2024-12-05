@@ -104,21 +104,29 @@ public class Battling : MonoBehaviour
     private IEnumerator Kaiju1Attack()
     {
         yield return new WaitForSeconds(kaiju1AttackTime);
-        attackTextKaiju1.SetActive(true);
-        float kaijuADamage = (1 - (float)kaiju2.defence / 1000) * kaiju1.attack;
-        kaiju2.currentHealth -= kaijuADamage;
-        attack1 = true;
-        StartCoroutine(KaijuAttack1());
+        if (kaiju1.currentHealth > 0 && kaiju2.currentHealth > 0)
+        {
+            attackTextKaiju1.SetActive(true);
+            float kaijuADamage = (1 - (float)kaiju2.defence / 1000) * kaiju1.attack;
+            kaiju2.currentHealth -= kaijuADamage;
+            attack1 = true;
+            StartCoroutine(KaijuAttack1());
+        }
+       
     }
 
     IEnumerator Kaiju2Attack()
     {
         yield return new WaitForSeconds(kaiju2AttackTime);
-        attackTextKaiju2.SetActive(true);
-        float kaijuBDamage = (1 - (float)kaiju1.defence / 1000) * kaiju2.attack;
-        kaiju1.currentHealth -= kaijuBDamage;
-        attack2 = true;
-        StartCoroutine(KaijuAttack2());
+        if (kaiju1.currentHealth > 0 && kaiju2.currentHealth > 0)
+        {
+            attackTextKaiju2.SetActive(true);
+            float kaijuBDamage = (1 - (float)kaiju1.defence / 1000) * kaiju2.attack;
+            kaiju1.currentHealth -= kaijuBDamage;
+            attack2 = true;
+            StartCoroutine(KaijuAttack2());
+        }
+      
     }
 
     IEnumerator KaijuAttack1()

@@ -1,39 +1,64 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class KaijuFocus : MonoBehaviour
 {
     public GameObject focusedKaiju;
-    private GameObject previousKaiju;
+    public GameObject previousKaiju;
 
     public List<GameObject> buttons = new List<GameObject>();
 
     public BottomMenu bMenu;
     public Food food;
+    [SerializeField] private TMP_InputField kaijuNameInputField;
+    
+    private void Start()
+    {
+        if (kaijuNameInputField != null)
+        {
+            kaijuNameInputField.onValueChanged.AddListener(OnKaijuNameChanged);
+        }
+    }
+    private void OnKaijuNameChanged(string newText)
+    {
+        Debug.Log("User is typing: " + newText);
+        focusedKaiju.name = newText;
+    }
+    
     
     // Update is called once per frame
     void Update()
     {
-        if (focusedKaiju != previousKaiju)
+        if (focusedKaiju != null)
         {
-            food.stats = focusedKaiju.GetComponent<KaijuStats>(); 
-            bMenu.Clicked();
-            bMenu.Flip();
-            previousKaiju = focusedKaiju;
-            for (int i = 0; i < buttons.Count; i ++)
+            if (focusedKaiju != previousKaiju)
             {
-                buttons[i].SetActive(true);
+                food.stats = focusedKaiju.GetComponent<KaijuStats>(); 
+                bMenu.Clicked();
+                bMenu.Flip();
+                previousKaiju = focusedKaiju;
+                for (int i = 0; i < buttons.Count; i ++)
+                {
+                    buttons[i].SetActive(true);
+                }
+
+                kaijuNameInputField.text = focusedKaiju.name;
             }
         }
-
-        if (focusedKaiju == null)
+       
+        if (focusedKaiju == null && previousKaiju != null)
         {
             for (int i = 0; i < buttons.Count; i ++)
             {
                 buttons[i].SetActive(false);
             }
+            bMenu.Clicked();
+            bMenu.Flip();
+            previousKaiju = null;
         }
+        
     }
 }

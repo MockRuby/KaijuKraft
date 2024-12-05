@@ -144,22 +144,22 @@ public class MotherManager : MonoBehaviour
         getEggButtonObj.SetActive(false);
         continueButtonObj.SetActive(true);
         Color newColor;
-        KaijuTraitLibrary.KaijuGatcha();
+        KaijuTraitLibrary.instance.KaijuGatcha();
 
         eggObj.SetActive(false);
         eggBaseObj.SetActive(true);
         eggShellObj.SetActive(true);
 
-        if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.eggShellColorPrimary[KaijuTraitLibrary.newKaijuTypeID], out newColor))
+        if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.instance.eggShellColorPrimary[KaijuTraitLibrary.instance.newKaijuTypeID], out newColor))
         {
             eggBaseSprite.color = newColor;
         }
-        if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.eggShellColorSecondary[KaijuTraitLibrary.newKaijuRarityID], out newColor))
+        if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.instance.eggShellColorSecondary[KaijuTraitLibrary.instance.newKaijuRarityID], out newColor))
         {
             eggShellSprite.color = newColor;
         }
 
-        KaijuTraitLibrary.BuildAndStoreSeed(KaijuTraitLibrary.newKaijuTypeID, KaijuTraitLibrary.newKaijuRarityID, KaijuTraitLibrary.newKaijuGeneID, KaijuTraitLibrary.newKaijuBaseColorID, KaijuTraitLibrary.newKaijuSecondaryColorID, KaijuTraitLibrary.newKaijuTertiaryColorID, KaijuTraitLibrary.newKaijuEyeLeftColorID, KaijuTraitLibrary.newKaijuEyeRightColorID, KaijuTraitLibrary.newKaijuAttackPts, KaijuTraitLibrary.newKaijuDefencePts, KaijuTraitLibrary.newKaijuHealthPts, KaijuTraitLibrary.newKaijuSpeedPts);
+        KaijuTraitLibrary.instance.BuildAndStoreSeed(KaijuTraitLibrary.instance.newKaijuTypeID, KaijuTraitLibrary.instance.newKaijuRarityID, KaijuTraitLibrary.instance.newKaijuGeneID, KaijuTraitLibrary.instance.newKaijuBaseColorID, KaijuTraitLibrary.instance.newKaijuSecondaryColorID, KaijuTraitLibrary.instance.newKaijuTertiaryColorID, KaijuTraitLibrary.instance.newKaijuEyeLeftColorID, KaijuTraitLibrary.instance.newKaijuEyeRightColorID, KaijuTraitLibrary.instance.newKaijuAttackPts, KaijuTraitLibrary.instance.newKaijuDefencePts, KaijuTraitLibrary.instance.newKaijuHealthPts, KaijuTraitLibrary.instance.newKaijuSpeedPts);
     }
 
     public void ResumeBreed()
@@ -184,6 +184,7 @@ public class MotherManager : MonoBehaviour
 
     public void ReturnToHabitat()
     {
+        
         SceneManager.LoadScene("Habitate");
     }
 

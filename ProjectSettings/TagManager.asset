@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Kaiju
   - GameManager
+  - Spawn
   layers:
   - Default
   - TransparentFX

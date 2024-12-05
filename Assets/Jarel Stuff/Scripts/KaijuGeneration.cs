@@ -70,17 +70,17 @@ public class KaijuGeneration : MonoBehaviour
         //kaijuTypeID = Random.Range(0,4);
         seed = stats.seed;
         stats = gameObject.GetComponent<KaijuStats>();
-        for (int i = 0; i < KaijuTraitLibrary.kaijuSeedList.Count; i++)
+        for (int i = 0; i < KaijuTraitLibrary.instance.kaijuSeedList.Count; i++)
         {
-            if (seed == KaijuTraitLibrary.kaijuSeedList[i])
+            if (seed == KaijuTraitLibrary.instance.kaijuSeedList[i])
             {
                 seedNum = i;
                 return;
             }
         }
 
-        seed = KaijuTraitLibrary.kaijuSeedList[seedNum];
-        stats.seed = KaijuTraitLibrary.kaijuSeedList[seedNum];
+        seed = KaijuTraitLibrary.instance.kaijuSeedList[seedNum];
+        stats.seed = KaijuTraitLibrary.instance.kaijuSeedList[seedNum];
 
         kaijuTypeID = int.Parse(seed.Substring(0,1));
         kaijuRarityID = int.Parse(seed.Substring(1,1));
@@ -107,7 +107,7 @@ public class KaijuGeneration : MonoBehaviour
         foreach (SpriteRenderer srColor in eggColorBase)
         {
             Color newColor;
-            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.eggShellColorPrimary[kaijuTypeID], out newColor))
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.instance.eggShellColorPrimary[kaijuTypeID], out newColor))
             {
                 srColor.color = newColor;
             }
@@ -120,7 +120,7 @@ public class KaijuGeneration : MonoBehaviour
         foreach (SpriteRenderer srColor in eggColorShell)
         {
             Color newColor;
-            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.eggShellColorSecondary[kaijuRarityID], out newColor))
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.instance.eggShellColorSecondary[kaijuRarityID], out newColor))
             {
                 srColor.color = newColor;
             }
@@ -133,7 +133,7 @@ public class KaijuGeneration : MonoBehaviour
         foreach (SpriteRenderer srColor in baseColor)
         {
             Color newColor;
-            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuColorBase[kaijuBaseColorID], out newColor))
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.instance.kaijuColorBase[kaijuBaseColorID], out newColor))
             {
                 srColor.color = newColor;
             }
@@ -146,7 +146,7 @@ public class KaijuGeneration : MonoBehaviour
         foreach (SpriteRenderer srColor in secondaryColor)
         {
             Color newColor;
-            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuColorSecondary[kaijuSecondaryColorID], out newColor))
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.instance.kaijuColorSecondary[kaijuSecondaryColorID], out newColor))
             {
                 srColor.color = newColor;
             }
@@ -159,7 +159,7 @@ public class KaijuGeneration : MonoBehaviour
         foreach (SpriteRenderer srColor in tertiaryColor)
         {
             Color newColor;
-            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuColorTertiary[kaijuTertiaryColorID], out newColor))
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.instance.kaijuColorTertiary[kaijuTertiaryColorID], out newColor))
             {
                 srColor.color = newColor;
             }
@@ -172,7 +172,7 @@ public class KaijuGeneration : MonoBehaviour
         foreach (SpriteRenderer srColor in eyeColorLeft)
         {
             Color newColor;
-            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuEyeColor[kaijuEyeLeftColorID], out newColor))
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.instance.kaijuEyeColor[kaijuEyeLeftColorID], out newColor))
             {
                 srColor.color = newColor;
             }
@@ -185,7 +185,7 @@ public class KaijuGeneration : MonoBehaviour
         foreach (SpriteRenderer srColor in eyeColorRight)
         {
             Color newColor;
-            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.kaijuEyeColor[kaijuEyeRightColorID], out newColor))
+            if (ColorUtility.TryParseHtmlString(KaijuTraitLibrary.instance.kaijuEyeColor[kaijuEyeRightColorID], out newColor))
             {
                 srColor.color = newColor;
             }

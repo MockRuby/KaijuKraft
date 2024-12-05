@@ -15,6 +15,7 @@ public class KaijuStats : MonoBehaviour
     public int defence; // Defence points of the Kaiju
     public int speed; // Speed of the Kaiju
     public string seed;
+    public bool selectedForBattle;
 
     public Animator eggAnimator;
 
@@ -51,7 +52,11 @@ public class KaijuStats : MonoBehaviour
 
     private void Start()
     {
-     //   focused = GameObject.FindGameObjectWithTag("GameManager").GetComponent<KaijuFocus>();
+        if (selectedForBattle)
+        {
+            return;
+        }
+        focused = GameObject.FindGameObjectWithTag("GameManager").GetComponent<KaijuFocus>();
 
     }
 
@@ -196,8 +201,9 @@ public class KaijuStats : MonoBehaviour
         prevSystemTime = currentSystemTime;
     }
 
-    /*private void OnMouseDown()
+    private void OnMouseDown()
     {
+        if(selectedForBattle) return;
         focused.focusedKaiju = gameObject;
-    }*/
+    }
 }

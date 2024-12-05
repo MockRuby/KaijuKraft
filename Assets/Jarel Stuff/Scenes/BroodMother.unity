@@ -5849,6 +5849,156 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &740466153
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 740466155}
+  - component: {fileID: 740466154}
+  m_Layer: 0
+  m_Name: Manger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &740466154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740466153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f43aa89ada986e448b30178f3ee599a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kaijuSeedList: []
+  newKaijuTypeID: 0
+  newKaijuRarityID: 0
+  newKaijuGeneID: 0
+  newKaijuAttackPts: 0
+  newKaijuHealthPts: 0
+  newKaijuDefencePts: 0
+  newKaijuSpeedPts: 0
+  newKaijuBaseColorID: 0
+  newKaijuBaseColor: 
+  newKaijuSecondaryColorID: 0
+  newKaijuSecondaryColor: 
+  newKaijuTertiaryColorID: 0
+  newKaijuTertiaryColor: 
+  newKaijuEyeLeftColorID: 0
+  newKaijuEyeLeftColor: 
+  newKaijuEyeRightColorID: 0
+  newKaijuEyeRightColor: 
+  newKaijuEggBaseColor: 
+  newKaijuEggSecondaryColor: 
+  kaijuTypeName:
+  - Mammalian
+  - Avian
+  - Aquatic
+  - Reptilian
+  kaijuRarityName:
+  - Common
+  - Uncommon
+  - Rare
+  - Legendary
+  eggShellColorPrimary:
+  - '#FFE8CC'
+  - '#FFF788'
+  - '#5DDCFF'
+  - '#AAF600'
+  eggShellColorSecondary:
+  - '#00EF31'
+  - '#1C76FF'
+  - '#B42DFD'
+  - '#FF6900'
+  kaijuColorBase:
+  - '#FFFFFF'
+  - '#FFBA5B'
+  - '#FFE9C0'
+  - '#F3B9D8'
+  - '#B4E7FF'
+  - '#DFFF94'
+  - '#CBA8FF'
+  - '#3A3E44'
+  - '#FF7400'
+  - '#8E7057'
+  - '#FF0009'
+  - '#005CFF'
+  - '#00AE0F'
+  - '#6536A2'
+  kaijuColorSecondary:
+  - '#3A3E44'
+  - '#743318'
+  - '#E6A040'
+  - '#C8B187'
+  - '#D894B8'
+  - '#7EBFDE'
+  - '#AAC767'
+  - '#AA81E7'
+  - '#BF5700'
+  - '#775335'
+  - '#BF0007'
+  - '#003CA6'
+  - '#007A0B'
+  - '#491092'
+  kaijuColorTertiary:
+  - '#FFFFFF'
+  - '#FFC52A'
+  - '#FFCF8F'
+  - '#FF79C8'
+  - '#52DAFF'
+  - '#BFFF4C'
+  - '#B877FF'
+  - '#FFB900'
+  - '#A77641'
+  - '#FF4844'
+  - '#427CFF'
+  - '#2EC64B'
+  - '#7C55D0'
+  - '#3A3E44'
+  kaijuEyeColor:
+  - '#FFC23B'
+  - '#00FF00'
+  - '#FFD700'
+  - '#00A4FF'
+  - '#D26700'
+  - '#D7126C'
+  - '#FFE2AF'
+  - '#B87333'
+  - '#41CD66'
+  - '#FF4500'
+  - '#C89EFF'
+  - '#40E0D0'
+  - '#934421'
+  - '#97D935'
+  - '#FF90D2'
+  - '#FFD470'
+  - '#AADDFF'
+  - '#9645FF'
+  - '#FF0600'
+  - '#09D700'
+--- !u!4 &740466155
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740466153}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1170, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &758500226
 GameObject:
   m_ObjectHideFlags: 0
@@ -16157,3 +16307,4 @@ SceneRoots:
   - {fileID: 202401075}
   - {fileID: 1927409573}
   - {fileID: 845825999}
+  - {fileID: 740466155}

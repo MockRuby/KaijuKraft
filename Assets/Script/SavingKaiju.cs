@@ -6,7 +6,21 @@ using UnityEngine;
 
 public class SavingKaiju : MonoBehaviour
 {
+    public static SavingKaiju instance;
+    
     public KaijuListData listData = new KaijuListData();
+
+    public GameObject kaijuPrefab;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogError("Mutiple " + instance);
+        }
+
+        instance = this;
+    }
 
     // Update is called once per411 frame
     void Update()
@@ -40,8 +54,21 @@ public class SavingKaiju : MonoBehaviour
         string filepath = Application.persistentDataPath + "/KaijuData.json";
         string jsonString = System.IO.File.ReadAllText(filepath);
         listData = JsonUtility.FromJson<KaijuListData>(jsonString);
-        listData.LoadingAllKaijuData();
+        LoadingAllKaijuData();
         Debug.Log("KaijuLoaded");
+    }
+
+    public void LoadingAllKaijuData()
+    {
+        foreach (KaijuData kaijuData in listData.kaijuListData)
+        {
+            Destroy(GameObject.FindGameObjectWithTag("Kaiju"));
+
+            GameObject clone =  Instantiate(kaijuPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+           
+            kaijuData.LoadData(clone.GetComponent<KaijuStats>(), clone);
+            clone.GetComponent<KaijuStats>().selectedForBattle = false;
+        }
     }
 
     public void BattleLoad()
@@ -52,22 +79,9 @@ public class SavingKaiju : MonoBehaviour
         Debug.Log("KaijuLoaded");
         foreach (KaijuData kaijuData in listData.kaijuListData)
         {
-            GameObject newKaiju = GameObject.FindGameObjectWithTag("Kaiju");
-            KaijuStats newKaijuStats = newKaiju.GetComponent<KaijuStats>();
-
-            // Apply saved data to the new Kaiju
-            newKaijuStats.health = kaijuData.localHealth;
-            newKaijuStats.attack = kaijuData.localAttack;
-            newKaijuStats.defence = kaijuData.localDefence;
-            newKaijuStats.speed = kaijuData.localSpeed;
-            newKaijuStats.growth = kaijuData.localGrowth;
-            newKaijuStats.prevSystemTime = kaijuData.localPrevSystemTime;
-            newKaijuStats.generalFood = kaijuData.localGeneralFood;
-            newKaijuStats.foodAttack = kaijuData.localFoodAttack;
-            newKaijuStats.foodDefence = kaijuData.localFoodDefence;
-            newKaijuStats.foodHealth = kaijuData.localFoodHealth;
-            newKaijuStats.foodSpeed = kaijuData.localFoodSpeed;
-            newKaijuStats.stageOfLife = kaijuData.stageOfLifeForSave;
+            if(!kaijuData.selectedForBattleLocal) continue;
+            GameObject kaiju = GameObject.FindWithTag("Kaiju");
+            kaijuData.BattleLoadData(kaiju.GetComponent<KaijuStats>(), kaiju);
         }
     }
 }
@@ -75,13 +89,14 @@ public class SavingKaiju : MonoBehaviour
 [System.Serializable]
 public class KaijuData
 {
-    public GameObject kaiju;
-    public KaijuStats stats;
     public int localHealth; // Health points of the Kaiju
     public int localAttack; // Attack points of the Kaiju
     public int localDefence; // Defence points of the Kaiju
     public int localSpeed; // Speed of the Kaiju
     public float localGrowth; // Growth progress of the Kaiju
+    public string kaijuName;
+    public bool selectedForBattleLocal;
+    public Vector3 pos;
 
     public string localSeed;
 
@@ -89,15 +104,18 @@ public class KaijuData
 
     // Food stats for the Kaiju
     public int localGeneralFood; // General food collected
-    public int localFoodAttack ; // Food for increasing attack
+    public int localFoodAttack; // Food for increasing attack
     public int localFoodDefence; // Food for increasing defence
     public int localFoodHealth; // Food for increasing health
     public int localFoodSpeed; // Food for increasing speed
     public KaijuStats.StagesOfLife stageOfLifeForSave;
 
 
-    public void SetData()
+    public void SetData(KaijuStats stats, GameObject kaiju)
     {
+        kaijuName = kaiju.name;
+        selectedForBattleLocal = stats.selectedForBattle;
+        pos = kaiju.transform.position;
         localHealth = stats.health;
         localAttack = stats.attack;
         localDefence = stats.defence;
@@ -113,7 +131,29 @@ public class KaijuData
         stageOfLifeForSave = stats.stageOfLife;
     }
 
-    public void LoadData()
+    public void LoadData(KaijuStats stats, GameObject kaiju)
+    {
+        KaijuGeneration gen = kaiju.GetComponent<KaijuGeneration>();
+        stats.health = localHealth;
+        stats.selectedForBattle = selectedForBattleLocal;
+        stats.attack = localAttack;
+        stats.defence = localDefence;
+        stats.speed = localSpeed;
+        stats.growth = localGrowth;
+        stats.prevSystemTime = localPrevSystemTime;
+        stats.generalFood = localGeneralFood;
+        stats.foodAttack = localFoodAttack;
+        stats.foodDefence = localFoodDefence;
+        stats.foodHealth = localFoodHealth;
+        stats.foodSpeed = localFoodSpeed;
+        stats.seed = localSeed;
+        stats.stageOfLife = stageOfLifeForSave;
+        kaiju.name = kaijuName;
+        kaiju.transform.position = pos;
+        gen.ParseSeed();
+    }
+
+    public void BattleLoadData(KaijuStats stats, GameObject kaiju)
     {
         KaijuGeneration gen = kaiju.GetComponent<KaijuGeneration>();
         stats.health = localHealth;
@@ -129,6 +169,7 @@ public class KaijuData
         stats.foodSpeed = localFoodSpeed;
         stats.seed = localSeed;
         stats.stageOfLife = stageOfLifeForSave;
+        kaiju.name = kaijuName;
         gen.ParseSeed();
     }
 }
@@ -144,18 +185,8 @@ public class KaijuListData
         foreach (GameObject kaiju in GameObject.FindGameObjectsWithTag("Kaiju"))
         {
             KaijuData kaijuData = new KaijuData();
-            kaijuData.kaiju = kaiju;
-            kaijuData.stats = kaiju.GetComponent<KaijuStats>();
-            kaijuData.SetData();
+            kaijuData.SetData(kaiju.GetComponent<KaijuStats>(), kaiju);
             kaijuListData.Add(kaijuData);
-        }
-    }
-
-    public void LoadingAllKaijuData()
-    {
-        foreach (KaijuData kaijuData in kaijuListData)
-        {
-            kaijuData.LoadData();
         }
     }
 }

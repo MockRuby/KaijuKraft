@@ -1,37 +1,40 @@
+using System;
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public static class KaijuTraitLibrary
+public class KaijuTraitLibrary : MonoBehaviour
 {
-    public static List<string> kaijuSeedList = new List<string>();
+    public static KaijuTraitLibrary instance;
+    public List<string> kaijuSeedList = new List<string>();
 
     static StringBuilder newSeed = new StringBuilder();
 
-    public static int newKaijuTypeID = 0;
-    public static int newKaijuRarityID = 0;
-    public static int newKaijuGeneID = 0;
-    public static int newKaijuAttackPts = 0;
-    public static int newKaijuHealthPts = 0;
-    public static int newKaijuDefencePts = 0;
-    public static int newKaijuSpeedPts = 0;
-    public static int newKaijuBaseColorID = 0;
-    public static string newKaijuBaseColor = "";
-    public static int newKaijuSecondaryColorID = 0;
-    public static string newKaijuSecondaryColor = "";
-    public static int newKaijuTertiaryColorID = 0;
-    public static string newKaijuTertiaryColor = "";
-    public static int newKaijuEyeLeftColorID = 0;
-    public static string newKaijuEyeLeftColor = "";
-    public static int newKaijuEyeRightColorID = 0;
-    public static string newKaijuEyeRightColor = "";
-    public static string newKaijuEggBaseColor = ""; //use typeID for color int ID
-    public static string newKaijuEggSecondaryColor = ""; //use rarityID for color int ID
+    public int newKaijuTypeID = 0;
+    public int newKaijuRarityID = 0;
+    public int newKaijuGeneID = 0;
+    public int newKaijuAttackPts = 0;
+    public int newKaijuHealthPts = 0;
+    public int newKaijuDefencePts = 0;
+    public int newKaijuSpeedPts = 0;
+    public int newKaijuBaseColorID = 0;
+    public string newKaijuBaseColor = "";
+    public int newKaijuSecondaryColorID = 0;
+    public string newKaijuSecondaryColor = "";
+    public int newKaijuTertiaryColorID = 0;
+    public string newKaijuTertiaryColor = "";
+    public int newKaijuEyeLeftColorID = 0;
+    public string newKaijuEyeLeftColor = "";
+    public int newKaijuEyeRightColorID = 0;
+    public string newKaijuEyeRightColor = "";
+    public string newKaijuEggBaseColor = ""; //use typeID for color int ID
+    public string newKaijuEggSecondaryColor = ""; //use rarityID for color int ID
 
 
-    public static List<string> kaijuTypeName = new List<string>
+    public List<string> kaijuTypeName = new List<string>
     {
         "Mammalian",
         "Avian",
@@ -39,15 +42,15 @@ public static class KaijuTraitLibrary
         "Reptilian"
     };
 
-    public static List<string> kaijuRarityName = new List<string>
+    public List<string> kaijuRarityName = new List<string>
     {
         "Common",
         "Uncommon",
         "Rare",
         "Legendary"
     };
-    
-    public static List<string> eggShellColorPrimary = new List<string>
+
+    public List<string> eggShellColorPrimary = new List<string>
     {
         "#FFE8CC", //0 - cream: mammal
         "#FFF788", //1 - gold: avian
@@ -55,7 +58,7 @@ public static class KaijuTraitLibrary
         "#AAF600" //3 - lime: reptile
     };
 
-    public static List<string> eggShellColorSecondary = new List<string>
+    public List<string> eggShellColorSecondary = new List<string>
     {
         "#00EF31", //0 - green: common
         "#1C76FF", //1 - blue: uncommon
@@ -63,7 +66,7 @@ public static class KaijuTraitLibrary
         "#FF6900" //3 - orange: legendary
     };
 
-    public static List<string> kaijuColorBase = new List<string>
+    public List<string> kaijuColorBase = new List<string>
     {
         "#FFFFFF", //0 -----white-----bright/soft colors
         "#FFBA5B", //1 ginger
@@ -81,7 +84,7 @@ public static class KaijuTraitLibrary
         "#6536A2" //13 purple
     };
 
-    public static List<string> kaijuColorSecondary = new List<string> //exclude black if base is black
+    public List<string> kaijuColorSecondary = new List<string> //exclude black if base is black
     {
         "#3A3E44", //0 black
         "#743318", //1 autumn
@@ -99,25 +102,27 @@ public static class KaijuTraitLibrary
         "#491092" //13 purple
     };
 
-    public static List<string> kaijuColorTertiary = new List<string> //exclude white if base is white, exclude black if base/secondary is black; i cannot make them anymore black or white without sacrificing details
-    {
-        "#FFFFFF", //0 white
-        "#FFC52A", //1 ginger
-        "#FFCF8F", //2 cream
-        "#FF79C8", //3 berry
-        "#52DAFF", //4 ice
-        "#BFFF4C", //5 lime
-        "#B877FF", //6 lilac
-        "#FFB900", //7 fire
-        "#A77641", //8 choco
-        "#FF4844", //9 scarlet
-        "#427CFF", //10 ocean
-        "#2EC64B", //11 moss
-        "#7C55D0", //12 purple
-        "#3A3E44" //13 black
-    };
+    public List<string> kaijuColorTertiary =
+        new
+            List<string> //exclude white if base is white, exclude black if base/secondary is black; i cannot make them anymore black or white without sacrificing details
+            {
+                "#FFFFFF", //0 white
+                "#FFC52A", //1 ginger
+                "#FFCF8F", //2 cream
+                "#FF79C8", //3 berry
+                "#52DAFF", //4 ice
+                "#BFFF4C", //5 lime
+                "#B877FF", //6 lilac
+                "#FFB900", //7 fire
+                "#A77641", //8 choco
+                "#FF4844", //9 scarlet
+                "#427CFF", //10 ocean
+                "#2EC64B", //11 moss
+                "#7C55D0", //12 purple
+                "#3A3E44" //13 black
+            };
 
-    public static List<string> kaijuEyeColor = new List<string>
+    public List<string> kaijuEyeColor = new List<string>
     {
         //common
         "#FFC23B", //0 amber
@@ -145,10 +150,21 @@ public static class KaijuTraitLibrary
         //legendary
         "#9645FF", //17 amethyst purple
         "#FF0600", //18 scarlet red
-        "#09D700"  //19 neon green
+        "#09D700" //19 neon green
     };
 
-    public static void KaijuGenePick()
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogError("More than one:" );
+        }
+
+        instance = this;
+        DontDestroyOnLoad(this);
+    }
+
+    public void KaijuGenePick()
     {
         switch (newKaijuRarityID)
         {
@@ -173,7 +189,7 @@ public static class KaijuTraitLibrary
         KaijuStatsRoll();
     }
 
-    public static void KaijuGatcha()
+    public void KaijuGatcha()
     {
         float mammalCap;
         float avianCap;
@@ -212,6 +228,7 @@ public static class KaijuTraitLibrary
         {
             newKaijuTypeID = 3;
         }
+
         newKaijuEggBaseColor = eggShellColorPrimary[newKaijuTypeID];
 
         if (rarityRoll < commonCap)
@@ -230,12 +247,13 @@ public static class KaijuTraitLibrary
         {
             newKaijuRarityID = 3;
         }
+
         newKaijuEggSecondaryColor = eggShellColorSecondary[newKaijuRarityID];
 
         KaijuGenePick();
     }
 
-    public static void KaijuColorPicks()
+    public void KaijuColorPicks()
     {
         newKaijuBaseColorID = Random.Range(0, 14);
         newKaijuBaseColor = kaijuColorBase[newKaijuBaseColorID];
@@ -270,12 +288,12 @@ public static class KaijuTraitLibrary
         KaijuEyeColorPicks();
     }
 
-    public static void KaijuEyeColorPicks()
+    public void KaijuEyeColorPicks()
     {
         switch (newKaijuRarityID)
         {
             case 0:
-                newKaijuEyeLeftColorID = Random.Range(0,7);
+                newKaijuEyeLeftColorID = Random.Range(0, 7);
                 break;
             case 1:
                 newKaijuEyeLeftColorID = Random.Range(0, 12);
@@ -305,7 +323,7 @@ public static class KaijuTraitLibrary
         }
     }
 
-    public static void KaijuStatsRoll()
+    public void KaijuStatsRoll()
     {
         switch (newKaijuTypeID)
         {
@@ -336,6 +354,7 @@ public static class KaijuTraitLibrary
                     newKaijuHealthPts = Mathf.RoundToInt(newKaijuHealthPts * 7.5f);
                     newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 6.5f);
                 }
+
                 break;
             case 1: //avian
                 newKaijuAttackPts = 14;
@@ -364,6 +383,7 @@ public static class KaijuTraitLibrary
                     newKaijuHealthPts = newKaijuHealthPts * 7;
                     newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 7.5f);
                 }
+
                 break;
             case 2: //aquatic
                 newKaijuAttackPts = 12;
@@ -392,6 +412,7 @@ public static class KaijuTraitLibrary
                     newKaijuHealthPts = newKaijuHealthPts * 7;
                     newKaijuSpeedPts = newKaijuSpeedPts * 7;
                 }
+
                 break;
             case 3: //reptilian
                 newKaijuAttackPts = 24;
@@ -420,13 +441,16 @@ public static class KaijuTraitLibrary
                     newKaijuHealthPts = newKaijuHealthPts * 7;
                     newKaijuSpeedPts = Mathf.RoundToInt(newKaijuSpeedPts * 6.5f);
                 }
+
                 break;
             default:
                 break;
         }
     }
 
-    public static void BuildAndStoreSeed(int typeID, int rarityID, int geneID, int baseColorID, int secondaryColorID, int tertiaryColorID, int eyeLeftColorID, int eyeRightColorID, int attackValue, int defenceValue, int healthValue, int speedValue)
+    public void BuildAndStoreSeed(int typeID, int rarityID, int geneID, int baseColorID, int secondaryColorID,
+        int tertiaryColorID, int eyeLeftColorID, int eyeRightColorID, int attackValue, int defenceValue,
+        int healthValue, int speedValue)
     {
         newSeed.Append(typeID.ToString());
         newSeed.Append(rarityID.ToString());
