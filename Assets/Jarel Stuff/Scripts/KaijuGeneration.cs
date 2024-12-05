@@ -42,10 +42,10 @@ public class KaijuGeneration : MonoBehaviour
     public GameObject[] kaijuAdultCatGenesPointed = new GameObject[13];
     public GameObject[] kaijuAdultCatGenesVan = new GameObject[5];
 
-    int x;
+
     public string seed;
     private int seedNum;
-
+    int spawnIndex;
     KaijuStats stats;
 
 
@@ -62,13 +62,19 @@ public class KaijuGeneration : MonoBehaviour
     /// <summary>
     /// Will add more variables for kaiju traits
     /// </summary>
-
+    private void Start()
+    {
+        Transform childTransform = transform;
+        spawnIndex = childTransform.GetSiblingIndex();
+        //Debug.Log("This object is index " + spawnIndex);
+        ParseSeed();
+    }
     public void ParseSeed()
     {
         stats = gameObject.GetComponent<KaijuStats>();
         //create reference to hatchery script for IDs
         //kaijuTypeID = Random.Range(0,4);
-        seed = stats.seed;
+        /*seed = stats.seed;
         stats = gameObject.GetComponent<KaijuStats>();
         for (int i = 0; i < KaijuTraitLibrary.instance.kaijuSeedList.Count; i++)
         {
@@ -77,10 +83,10 @@ public class KaijuGeneration : MonoBehaviour
                 seedNum = i;
                 return;
             }
-        }
+        }*/
 
-        seed = KaijuTraitLibrary.instance.kaijuSeedList[seedNum];
-        stats.seed = KaijuTraitLibrary.instance.kaijuSeedList[seedNum];
+        seed = KaijuTraitLibrary.instance.kaijuSeedList[spawnIndex];
+        stats.seed = KaijuTraitLibrary.instance.kaijuSeedList[spawnIndex];
 
         kaijuTypeID = int.Parse(seed.Substring(0,1));
         kaijuRarityID = int.Parse(seed.Substring(1,1));
