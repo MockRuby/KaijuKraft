@@ -27,7 +27,19 @@ public class KaijuFocus : MonoBehaviour
         Debug.Log("User is typing: " + newText);
         focusedKaiju.name = newText;
     }
-    
+
+    public void KaijuStore()
+    {
+        for (int i = 0; i < KaijuStorage.instance.spawnLocations.Count; i++)
+        {
+            if (focusedKaiju.transform.position == KaijuStorage.instance.spawnLocations[i].transform.position)
+            {
+                KaijuStorage.instance.spawnFilled[i] = false;
+            }
+        }
+        focusedKaiju.transform.position = new Vector3(0, 0, -20);
+        focusedKaiju = null;
+    }
     
     // Update is called once per frame
     void Update()
@@ -36,9 +48,12 @@ public class KaijuFocus : MonoBehaviour
         {
             if (focusedKaiju != previousKaiju)
             {
-                food.stats = focusedKaiju.GetComponent<KaijuStats>(); 
-                bMenu.Clicked();
-                bMenu.Flip();
+                food.stats = focusedKaiju.GetComponent<KaijuStats>();
+                if (!bMenu.anim.GetBool("clickedBottom"))
+                {
+                    bMenu.Clicked();
+                    bMenu.Flip();
+                }
                 previousKaiju = focusedKaiju;
                 for (int i = 0; i < buttons.Count; i ++)
                 {
@@ -55,8 +70,11 @@ public class KaijuFocus : MonoBehaviour
             {
                 buttons[i].SetActive(false);
             }
-            bMenu.Clicked();
-            bMenu.Flip();
+            if (bMenu.anim.GetBool("clickedBottom"))
+            {
+                bMenu.Clicked();
+                bMenu.Flip();
+            }
             previousKaiju = null;
         }
         

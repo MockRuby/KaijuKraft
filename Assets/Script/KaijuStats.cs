@@ -66,10 +66,6 @@ public class KaijuStats : MonoBehaviour
         // Check the current stage of life for the Kaiju and update accordingly
         if (stageOfLife == StagesOfLife.Egg)
         {
-            health = 10;
-            attack = 10;
-            defence = 10;
-            speed = 10;
             EggGrowing();
             egg.SetActive(true);
             juv.SetActive(false);

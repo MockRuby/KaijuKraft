@@ -23,6 +23,7 @@ public class SelectKaiju : MonoBehaviour
 
     public void UpdateList()
     {
+        kaijus.Clear();
         foreach (GameObject kaiju in GameObject.FindGameObjectsWithTag("Kaiju"))
         {
             kaijus.Add(kaiju.GetComponent<KaijuStats>());

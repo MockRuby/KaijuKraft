@@ -18,7 +18,7 @@ public class KaijuStorage : MonoBehaviour
     public int defenceFood = 0;
     public int speedFood = 0;
     public int healthFood = 10;
-    
+    public int previousSceneIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,21 +30,31 @@ public class KaijuStorage : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
 
-        eggAmount = KaijuTraitLibrary.instance.kaijuSeedList.Count;
+        eggAmount = 1;
     }
 
     private void Update()
     {
-        if (SceneManager.GetActiveScene().ToString() == "Habitate" && !inRightScene)
+        if (SceneManager.GetActiveScene().buildIndex == 1 && !inRightScene)
         {
             LoadSpawns();
             Debug.Log("in habate");
+            if (previousSceneIndex == 2 )
+            {
+                SavingKaiju.instance.LoadKaiju();
+                previousSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            }
             inRightScene = true;
         }
-        else if(SceneManager.GetActiveScene().ToString() != "Habitate")
+        else if(SceneManager.GetActiveScene().buildIndex != 1)
         {
             inRightScene = false;
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SpawnEgg();
+        }
+        
     }
 
     public void SpawnEgg()
@@ -57,8 +67,11 @@ public class KaijuStorage : MonoBehaviour
                 if(spawnFilled[i] == true) continue;
                 else
                 {
-                    Instantiate(kaiju, spawnLocations[i]);
-                    
+                    GameObject clone = Instantiate(kaiju, spawnLocations[i]);
+                    clone.GetComponent<KaijuStats>().seed = KaijuTraitLibrary.instance.kaijuSeedList[0];
+                    clone.GetComponent<KaijuGeneration>().ParseSeed();
+                    KaijuTraitLibrary.instance.kaijuSeedList.Remove(KaijuTraitLibrary.instance.kaijuSeedList[0]);
+
                     spawnFilled[i] = true;
                     return;
                 }
@@ -81,4 +94,5 @@ public class KaijuStorage : MonoBehaviour
     {
         return a.position.x.CompareTo(b.position.x);
     }
+ 
 }

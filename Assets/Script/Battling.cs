@@ -25,6 +25,9 @@ public class Battling : MonoBehaviour
 
     public TextMeshProUGUI playerWin;
 
+    public GameObject rewardScreen;
+    public GameObject returnButton;
+
 
     private void Start()
     {
@@ -41,14 +44,13 @@ public class Battling : MonoBehaviour
         {
             // Perform battle actions for kaiju1 and kaiju2
             BattleRound();
-
+            kaiju1DesplayHealth.fillAmount = kaiju1.currentHealth / kaiju1.health;
+            kaiju2DesplayHealth.fillAmount = kaiju2.currentHealth / kaiju2.health;
 
             // Display the winner based on the final stats
             DisplayWinner();
         }
-
-        kaiju1DesplayHealth.fillAmount = kaiju1.currentHealth / kaiju1.health;
-        kaiju2DesplayHealth.fillAmount = kaiju2.currentHealth / kaiju2.health;
+        
     }
 
     // Function to simulate a single round of battle between two kaiju
@@ -77,6 +79,7 @@ public class Battling : MonoBehaviour
             playerWin.gameObject.SetActive(true);
             playerWin.text = "You Win";
             startBattle = false;
+            rewardScreen.SetActive(true);
         }
         else if (0 >= kaiju1.currentHealth)
         {
@@ -84,6 +87,7 @@ public class Battling : MonoBehaviour
             playerWin.gameObject.SetActive(true);
             playerWin.text = "You Loose";
             startBattle = false;
+            returnButton.SetActive(true);
         }
         else if (kaiju1.currentHealth <= 0 && kaiju2.currentHealth <= 0)
         {
@@ -91,6 +95,7 @@ public class Battling : MonoBehaviour
             playerWin.gameObject.SetActive(true);
             playerWin.text = "You Tie";
             startBattle = false;
+            returnButton.SetActive(true);
         }
     }
 

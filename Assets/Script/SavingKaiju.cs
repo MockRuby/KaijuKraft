@@ -134,6 +134,8 @@ public class KaijuData
     public void LoadData(KaijuStats stats, GameObject kaiju)
     {
         KaijuGeneration gen = kaiju.GetComponent<KaijuGeneration>();
+        stats.seed = localSeed;
+        gen.ParseSeed();
         stats.health = localHealth;
         stats.selectedForBattle = selectedForBattleLocal;
         stats.attack = localAttack;
@@ -146,16 +148,16 @@ public class KaijuData
         stats.foodDefence = localFoodDefence;
         stats.foodHealth = localFoodHealth;
         stats.foodSpeed = localFoodSpeed;
-        stats.seed = localSeed;
         stats.stageOfLife = stageOfLifeForSave;
         kaiju.name = kaijuName;
         kaiju.transform.position = pos;
-        gen.ParseSeed();
     }
 
     public void BattleLoadData(KaijuStats stats, GameObject kaiju)
     {
         KaijuGeneration gen = kaiju.GetComponent<KaijuGeneration>();
+        stats.seed = localSeed;
+        gen.ParseSeed();
         stats.health = localHealth;
         stats.attack = localAttack;
         stats.defence = localDefence;
@@ -167,10 +169,8 @@ public class KaijuData
         stats.foodDefence = localFoodDefence;
         stats.foodHealth = localFoodHealth;
         stats.foodSpeed = localFoodSpeed;
-        stats.seed = localSeed;
         stats.stageOfLife = stageOfLifeForSave;
         kaiju.name = kaijuName;
-        gen.ParseSeed();
     }
 }
 

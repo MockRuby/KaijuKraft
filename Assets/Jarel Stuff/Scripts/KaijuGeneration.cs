@@ -45,7 +45,6 @@ public class KaijuGeneration : MonoBehaviour
 
     public string seed;
     private int seedNum;
-    int spawnIndex;
     KaijuStats stats;
 
 
@@ -64,29 +63,12 @@ public class KaijuGeneration : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        Transform childTransform = transform;
-        spawnIndex = childTransform.GetSiblingIndex();
-        //Debug.Log("This object is index " + spawnIndex);
-        ParseSeed();
+       // ParseSeed();
     }
     public void ParseSeed()
     {
         stats = gameObject.GetComponent<KaijuStats>();
-        //create reference to hatchery script for IDs
-        //kaijuTypeID = Random.Range(0,4);
-        /*seed = stats.seed;
-        stats = gameObject.GetComponent<KaijuStats>();
-        for (int i = 0; i < KaijuTraitLibrary.instance.kaijuSeedList.Count; i++)
-        {
-            if (seed == KaijuTraitLibrary.instance.kaijuSeedList[i])
-            {
-                seedNum = i;
-                return;
-            }
-        }*/
-
-        seed = KaijuTraitLibrary.instance.kaijuSeedList[spawnIndex];
-        stats.seed = KaijuTraitLibrary.instance.kaijuSeedList[spawnIndex];
+        seed = stats.seed;
 
         kaijuTypeID = int.Parse(seed.Substring(0,1));
         kaijuRarityID = int.Parse(seed.Substring(1,1));
