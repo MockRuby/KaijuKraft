@@ -9,6 +9,8 @@ public class SavingKaiju : MonoBehaviour
     public static SavingKaiju instance;
     
     public KaijuListData listData = new KaijuListData();
+    public FoodAndEgg foodAndEggData = new FoodAndEgg();
+    public SeedData seedData = new SeedData();
 
     public GameObject kaijuPrefab;
 
@@ -20,23 +22,6 @@ public class SavingKaiju : MonoBehaviour
         }
 
         instance = this;
-    }
-
-    // Update is called once per411 frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            SaveKaiju();
-        }
-        else if (Input.GetKeyDown(KeyCode.L))
-        {
-            LoadKaiju();
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            BattleLoad();
-        }
     }
 
     public void SaveKaiju()
@@ -52,20 +37,25 @@ public class SavingKaiju : MonoBehaviour
     public void LoadKaiju()
     {
         string filepath = Application.persistentDataPath + "/KaijuData.json";
-        string jsonString = System.IO.File.ReadAllText(filepath);
-        listData = JsonUtility.FromJson<KaijuListData>(jsonString);
-        LoadingAllKaijuData();
-        Debug.Log("KaijuLoaded");
+        if (System.IO.File.Exists(filepath))
+        {
+            string jsonString = System.IO.File.ReadAllText(filepath);
+            listData = JsonUtility.FromJson<KaijuListData>(jsonString);
+            LoadingAllKaijuData();
+            Debug.Log("KaijuLoaded");
+        }
+  
     }
 
     public void LoadingAllKaijuData()
     {
+        foreach (GameObject kaiju in GameObject.FindGameObjectsWithTag("Kaiju"))
+        {
+            Destroy(kaiju);
+        }
         foreach (KaijuData kaijuData in listData.kaijuListData)
         {
-            Destroy(GameObject.FindGameObjectWithTag("Kaiju"));
-
             GameObject clone =  Instantiate(kaijuPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-           
             kaijuData.LoadData(clone.GetComponent<KaijuStats>(), clone);
             clone.GetComponent<KaijuStats>().selectedForBattle = false;
         }
@@ -84,6 +74,49 @@ public class SavingKaiju : MonoBehaviour
             kaijuData.BattleLoadData(kaiju.GetComponent<KaijuStats>(), kaiju);
         }
     }
+
+    public void SaveFoodAndEgg()
+    {
+        foodAndEggData.SetData();
+        string filepath = Application.persistentDataPath + "/FoodAndEggData.json";
+        Debug.Log(filepath);
+        string jsonString = JsonUtility.ToJson(foodAndEggData, true);
+        System.IO.File.WriteAllText(filepath, jsonString);
+        Debug.Log("foodSaved");
+    }
+    public void LoadFoodAndEgg()
+    {
+        string filepath = Application.persistentDataPath + "/FoodAndEggData.json";
+        if (System.IO.File.Exists(filepath))
+        {
+            string jsonString = System.IO.File.ReadAllText(filepath);
+            foodAndEggData = JsonUtility.FromJson<FoodAndEgg>(jsonString);
+            foodAndEggData.LoadData();
+            Debug.Log("foodLoaded");
+        }
+    }
+
+    public void SaveSeedData()
+    {
+        seedData.SetData();
+        string filepath = Application.persistentDataPath + "/SeedData.json";
+        Debug.Log(filepath);
+        string jsonString = JsonUtility.ToJson(seedData, true);
+        System.IO.File.WriteAllText(filepath, jsonString);
+        Debug.Log("seedSaved");
+    }
+
+    public void LoadSeedData()
+    {
+        string filepath = Application.persistentDataPath + "/SeedData.json";
+        if (System.IO.File.Exists(filepath))
+        {
+            string jsonString = System.IO.File.ReadAllText(filepath);
+            seedData = JsonUtility.FromJson<SeedData>(jsonString);
+            seedData.LoadData();
+            Debug.Log("seedLoaded");
+        }
+    }
 }
 
 [System.Serializable]
@@ -97,7 +130,8 @@ public class KaijuData
     public string kaijuName;
     public bool selectedForBattleLocal;
     public Vector3 pos;
-
+    public bool inSpawnLocal;
+    public int spawnLocal;
     public string localSeed;
 
     public float localPrevSystemTime; // Previous system time for growth calculation
@@ -114,6 +148,8 @@ public class KaijuData
     public void SetData(KaijuStats stats, GameObject kaiju)
     {
         kaijuName = kaiju.name;
+        inSpawnLocal = stats.inSpawn;
+        spawnLocal = stats.spawn;
         selectedForBattleLocal = stats.selectedForBattle;
         pos = kaiju.transform.position;
         localHealth = stats.health;
@@ -136,6 +172,8 @@ public class KaijuData
         KaijuGeneration gen = kaiju.GetComponent<KaijuGeneration>();
         stats.seed = localSeed;
         gen.ParseSeed();
+        stats.spawn = spawnLocal;
+        stats.inSpawn = inSpawnLocal;
         stats.health = localHealth;
         stats.selectedForBattle = selectedForBattleLocal;
         stats.attack = localAttack;
@@ -188,5 +226,52 @@ public class KaijuListData
             kaijuData.SetData(kaiju.GetComponent<KaijuStats>(), kaiju);
             kaijuListData.Add(kaijuData);
         }
+    }
+}
+
+[System.Serializable]
+public class FoodAndEgg
+{
+    public int localGeneralFood; // General food collected
+    public int localFoodAttack; // Food for increasing attack
+    public int localFoodDefence; // Food for increasing defence
+    public int localFoodHealth; // Food for increasing health
+    public int localFoodSpeed; // Food for increasing speed
+    public int localEggAmount;
+    public void SetData()
+    {
+       
+        localGeneralFood =  KaijuStorage.instance.generalFood;;
+        localFoodAttack = KaijuStorage.instance.attackFood;
+        localFoodDefence = KaijuStorage.instance.defenceFood;
+        localFoodHealth = KaijuStorage.instance.healthFood;
+        localFoodSpeed = KaijuStorage.instance.speedFood;
+        localEggAmount = KaijuStorage.instance.eggAmount;
+    }
+
+    public void LoadData()
+    {
+        KaijuStorage.instance.generalFood = localGeneralFood;
+        KaijuStorage.instance.attackFood = localFoodAttack;
+        KaijuStorage.instance.defenceFood = localFoodDefence;
+        KaijuStorage.instance.healthFood = localFoodHealth;
+        KaijuStorage.instance.speedFood = localFoodSpeed;
+        KaijuStorage.instance.eggAmount = localEggAmount;
+    }
+}
+[System.Serializable]
+public class SeedData
+{
+    public List<string> localSeeds;
+
+    public void SetData()
+    {
+        localSeeds = KaijuTraitLibrary.instance.kaijuSeedList;
+    }
+
+    public void LoadData()
+    {
+        KaijuTraitLibrary.instance.kaijuSeedList.Clear();
+        KaijuTraitLibrary.instance.kaijuSeedList = localSeeds;
     }
 }

@@ -898,7 +898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a38437042b0f79a43adec8430a9a9fe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eggAmount: 0
+  eggAmount: 1
   kaiju: {fileID: 2347584986245964810, guid: 86385a2486eecfa4eafa62823aa89911, type: 3}
   spawnLocations:
   - {fileID: 0}
@@ -911,7 +911,7 @@ MonoBehaviour:
   defenceFood: 0
   speedFood: 0
   healthFood: 10
-  previousSceneIndex: 0
+  food: {fileID: 0}
 --- !u!4 &1093806327
 Transform:
   m_ObjectHideFlags: 0
@@ -1060,6 +1060,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   listData:
     kaijuListData: []
+  foodAndEggData:
+    localGeneralFood: 0
+    localFoodAttack: 0
+    localFoodDefence: 0
+    localFoodHealth: 0
+    localFoodSpeed: 0
+    localEggAmount: 0
+  seedData:
+    localSeeds: []
   kaijuPrefab: {fileID: 2347584986245964810, guid: 86385a2486eecfa4eafa62823aa89911,
     type: 3}
 --- !u!1 &1125830794
@@ -1212,7 +1221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1154550551
 Light:
   m_ObjectHideFlags: 0
@@ -1472,7 +1481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1392605158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1596,7 +1605,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1765978549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1665,7 +1674,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &2002902674
 AudioListener:
   m_ObjectHideFlags: 0

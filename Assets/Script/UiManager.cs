@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class UiManager : MonoBehaviour
 {
@@ -19,7 +21,8 @@ public class UiManager : MonoBehaviour
 
     public void Scene(int scene)
     {
-        KaijuStorage.instance.previousSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SavingKaiju.instance.SaveSeedData();
+        SavingKaiju.instance.SaveFoodAndEgg();
         SceneManager.LoadScene(scene);
     }
 
@@ -41,6 +44,8 @@ public class UiManager : MonoBehaviour
     public void SpawnAEgg()
     {
         KaijuStorage.instance.SpawnEgg();
+        SavingKaiju.instance.SaveSeedData();
+        SavingKaiju.instance.SaveFoodAndEgg();
     }
     
     public void EggRoll(TextMeshProUGUI eggName)
@@ -61,6 +66,8 @@ public class UiManager : MonoBehaviour
 
         KaijuTraitLibrary.instance.BuildAndStoreSeed(KaijuTraitLibrary.instance.newKaijuTypeID, KaijuTraitLibrary.instance.newKaijuRarityID, KaijuTraitLibrary.instance.newKaijuGeneID, KaijuTraitLibrary.instance.newKaijuBaseColorID, KaijuTraitLibrary.instance.newKaijuSecondaryColorID, KaijuTraitLibrary.instance.newKaijuTertiaryColorID, KaijuTraitLibrary.instance.newKaijuEyeLeftColorID, KaijuTraitLibrary.instance.newKaijuEyeRightColorID, KaijuTraitLibrary.instance.newKaijuAttackPts, KaijuTraitLibrary.instance.newKaijuDefencePts, KaijuTraitLibrary.instance.newKaijuHealthPts, KaijuTraitLibrary.instance.newKaijuSpeedPts);
         eggName.text = KaijuTraitLibrary.instance.kaijuRarityName[KaijuTraitLibrary.instance.newKaijuRarityID] + " " + KaijuTraitLibrary.instance.kaijuTypeName[KaijuTraitLibrary.instance.newKaijuTypeID] + " Egg";
+        SavingKaiju.instance.SaveSeedData();
+        SavingKaiju.instance.SaveFoodAndEgg();
     }
 
     public void FoodRoll()
@@ -85,6 +92,25 @@ public class UiManager : MonoBehaviour
 
         KaijuStorage.instance.healthFood += healthRange;
         health.text = "x" + healthRange;
+        SavingKaiju.instance.SaveFoodAndEgg();
+    }
 
+    public void UpdateKaijuAmount(TextMeshProUGUI kaijuAmount)
+    {
+        int amount = 0;
+        for (int i = 0; i < KaijuStorage.instance.spawnFilled.Count; i++)
+        {
+            if (KaijuStorage.instance.spawnFilled[i] == true)
+            {
+                amount++;
+            }
+        }
+
+        kaijuAmount.text = "Kaiju: " + amount + "/3";
+    }
+
+    public void EggUIUpdate(TextMeshProUGUI eggAmountText)
+    {
+        eggAmountText.text = "x" + KaijuStorage.instance.eggAmount;
     }
 }

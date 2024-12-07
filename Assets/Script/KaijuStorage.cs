@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class KaijuStorage : MonoBehaviour
 {
     public static KaijuStorage instance;
-    public int eggAmount;
+    public int eggAmount = 1;
     public GameObject kaiju;
     public List<Transform> spawnLocations;
     public List<bool> spawnFilled;
@@ -17,8 +18,10 @@ public class KaijuStorage : MonoBehaviour
     public int attackFood = 10;
     public int defenceFood = 0;
     public int speedFood = 0;
+
     public int healthFood = 10;
-    public int previousSceneIndex = 0;
+    public Food food;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,7 +33,7 @@ public class KaijuStorage : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
 
-        eggAmount = 1;
+        SavingKaiju.instance.LoadFoodAndEgg();
     }
 
     private void Update()
@@ -39,22 +42,30 @@ public class KaijuStorage : MonoBehaviour
         {
             LoadSpawns();
             Debug.Log("in habate");
-            if (previousSceneIndex == 2 )
+
+            SavingKaiju.instance.LoadKaiju();
+            foreach (GameObject kajus in GameObject.FindGameObjectsWithTag("Kaiju"))
             {
-                SavingKaiju.instance.LoadKaiju();
-                previousSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                KaijuStats stats = kajus.GetComponent<KaijuStats>();
+                if (stats.inSpawn)
+                {
+                    spawnFilled[stats.spawn] = true;
+                }
             }
+
+            food = FindObjectOfType<Food>();
+            food.UpdateFoodUI();
             inRightScene = true;
         }
-        else if(SceneManager.GetActiveScene().buildIndex != 1)
+        else if (SceneManager.GetActiveScene().buildIndex != 1)
         {
             inRightScene = false;
         }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             SpawnEgg();
         }
-        
     }
 
     public void SpawnEgg()
@@ -64,20 +75,22 @@ public class KaijuStorage : MonoBehaviour
             eggAmount--;
             for (int i = 0; i < spawnLocations.Count; i++)
             {
-                if(spawnFilled[i] == true) continue;
+                if (spawnFilled[i] == true) continue;
                 else
                 {
                     GameObject clone = Instantiate(kaiju, spawnLocations[i]);
+                    clone.name = clone.name + Random.Range(1, 1000);
                     clone.GetComponent<KaijuStats>().seed = KaijuTraitLibrary.instance.kaijuSeedList[0];
                     clone.GetComponent<KaijuGeneration>().ParseSeed();
                     KaijuTraitLibrary.instance.kaijuSeedList.Remove(KaijuTraitLibrary.instance.kaijuSeedList[0]);
+                    clone.GetComponent<KaijuStats>().inSpawn = true;
+                    clone.GetComponent<KaijuStats>().spawn = i;
 
                     spawnFilled[i] = true;
                     return;
                 }
             }
         }
-       
     }
 
     public void LoadSpawns()
@@ -87,6 +100,7 @@ public class KaijuStorage : MonoBehaviour
         {
             spawnLocations[i] = spawnLocationsTemp[i].transform;
         }
+
         spawnLocations.Sort(Compare);
     }
 
@@ -94,5 +108,4 @@ public class KaijuStorage : MonoBehaviour
     {
         return a.position.x.CompareTo(b.position.x);
     }
- 
 }

@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 19703574}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.88, y: -0.11, z: -2.1}
+  m_LocalPosition: {x: 6.37, y: -0.11, z: -2.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -738,7 +738,7 @@ Transform:
   m_GameObject: {fileID: 291485060}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.19, y: -0.11, z: -2.1}
+  m_LocalPosition: {x: -6.8, y: -0.11, z: -2.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1453,6 +1453,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 714667080}
+        m_TargetAssemblyTypeName: PlaceRemoveKaiju, Assembly-CSharp
+        m_MethodName: UpdateList
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &454295032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1745,6 +1757,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats: {fileID: 0}
   focused: {fileID: 602620619}
+  foods:
+  - {fileID: 970638661}
+  - {fileID: 2029134116}
+  - {fileID: 1370755704}
+  - {fileID: 1291779694}
+  - {fileID: 918485743}
 --- !u!1 &567241869
 GameObject:
   m_ObjectHideFlags: 0
@@ -1866,6 +1884,7 @@ GameObject:
   - component: {fileID: 602620614}
   - component: {fileID: 602620618}
   - component: {fileID: 602620619}
+  - component: {fileID: 602620620}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: GameManager
@@ -2005,6 +2024,21 @@ MonoBehaviour:
   bMenu: {fileID: 523403539}
   food: {fileID: 523403543}
   kaijuNameInputField: {fileID: 1933051582}
+  kaijuAmount: {fileID: 26295808}
+  ui: {fileID: 602620618}
+--- !u!114 &602620620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602620613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 506ab121175db324ca2a39ab54a6507f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battle: {fileID: 1860243192}
 --- !u!1 &714667074
 GameObject:
   m_ObjectHideFlags: 0
@@ -2018,6 +2052,7 @@ GameObject:
   - component: {fileID: 714667077}
   - component: {fileID: 714667076}
   - component: {fileID: 714667079}
+  - component: {fileID: 714667080}
   m_Layer: 5
   m_Name: SideMenu
   m_TagString: Untagged
@@ -2121,6 +2156,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 714667076}
   save: {fileID: 0}
+--- !u!114 &714667080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714667074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02503c2b70495d341b40b1aaf3addddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 8113581607812146530, guid: 439cf2531b533fd4bb2c208ab81afd9a, type: 3}
+  kaijuContent: {fileID: 865913691}
+  kaijus: []
 --- !u!1 &730200590
 GameObject:
   m_ObjectHideFlags: 0
@@ -2752,6 +2802,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 714667080}
+        m_TargetAssemblyTypeName: PlaceRemoveKaiju, Assembly-CSharp
+        m_MethodName: UpdateList
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 602620618}
+        m_TargetAssemblyTypeName: UiManager, Assembly-CSharp
+        m_MethodName: EggUIUpdate
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1338090229}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &825224423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3033,15 +3107,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
+    m_Left: 25
     m_Right: 0
-    m_Top: 0
+    m_Top: 10
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 0, y: 0}
+  m_CellSize: {x: 300, y: 100}
+  m_Spacing: {x: 0, y: 10}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!114 &865913693
@@ -3401,7 +3475,7 @@ GameObject:
   - component: {fileID: 918485744}
   - component: {fileID: 918485743}
   m_Layer: 5
-  m_Name: Amount
+  m_Name: HAmount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3535,7 +3609,7 @@ GameObject:
   - component: {fileID: 970638662}
   - component: {fileID: 970638661}
   m_Layer: 5
-  m_Name: Amount
+  m_Name: GAmount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3739,7 +3813,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 974685356}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 602620619}
+        m_TargetAssemblyTypeName: KaijuFocus, Assembly-CSharp
+        m_MethodName: KaijuStore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &974685356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4006,6 +4092,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 602620618}
+        m_TargetAssemblyTypeName: UiManager, Assembly-CSharp
+        m_MethodName: EggUIUpdate
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1338090229}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1094765890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4212,7 +4310,7 @@ Transform:
   m_GameObject: {fileID: 1219586327}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.27, y: -0.11, z: -2.1}
+  m_LocalPosition: {x: 0, y: -0.11, z: -2.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4230,7 +4328,7 @@ GameObject:
   - component: {fileID: 1291779695}
   - component: {fileID: 1291779694}
   m_Layer: 5
-  m_Name: Amount
+  m_Name: SAmount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4577,7 +4675,7 @@ GameObject:
   - component: {fileID: 1370755705}
   - component: {fileID: 1370755704}
   m_Layer: 5
-  m_Name: Amount
+  m_Name: DAmount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5315,7 +5413,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1860243193
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5943,7 +6041,7 @@ GameObject:
   - component: {fileID: 2029134117}
   - component: {fileID: 2029134116}
   m_Layer: 5
-  m_Name: Amount
+  m_Name: AAmount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

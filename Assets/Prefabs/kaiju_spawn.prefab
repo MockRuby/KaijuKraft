@@ -7564,8 +7564,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8, y: 10, z: 1}
-  m_Center: {x: 0, y: 5, z: 0}
+  m_Size: {x: 17.708088, y: 21.428572, z: 1}
+  m_Center: {x: 0.2826023, y: 10.714286, z: 0}
 --- !u!114 &2649135791532503898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7857,6 +7857,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   focused: {fileID: 0}
+  inSpawn: 0
+  spawn: 4
   health: 0
   currentHealth: 0
   attack: 0

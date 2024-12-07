@@ -14,7 +14,10 @@ public class KaijuFocus : MonoBehaviour
     public BottomMenu bMenu;
     public Food food;
     [SerializeField] private TMP_InputField kaijuNameInputField;
-    
+    public TextMeshProUGUI kaijuAmount;
+
+    public UiManager ui;
+
     private void Start()
     {
         if (kaijuNameInputField != null)
@@ -22,6 +25,7 @@ public class KaijuFocus : MonoBehaviour
             kaijuNameInputField.onValueChanged.AddListener(OnKaijuNameChanged);
         }
     }
+
     private void OnKaijuNameChanged(string newText)
     {
         Debug.Log("User is typing: " + newText);
@@ -30,20 +34,19 @@ public class KaijuFocus : MonoBehaviour
 
     public void KaijuStore()
     {
-        for (int i = 0; i < KaijuStorage.instance.spawnLocations.Count; i++)
-        {
-            if (focusedKaiju.transform.position == KaijuStorage.instance.spawnLocations[i].transform.position)
-            {
-                KaijuStorage.instance.spawnFilled[i] = false;
-            }
-        }
-        focusedKaiju.transform.position = new Vector3(0, 0, -20);
+        KaijuStats stats = focusedKaiju.GetComponent<KaijuStats>();
+
+        KaijuStorage.instance.spawnFilled[stats.spawn] = false;
+        stats.spawn = 4;
+        stats.inSpawn = false;
+        focusedKaiju.transform.position = new Vector3(0, 0, 20);
         focusedKaiju = null;
     }
-    
+
     // Update is called once per frame
     void Update()
     {
+        ui.UpdateKaijuAmount(kaijuAmount);
         if (focusedKaiju != null)
         {
             if (focusedKaiju != previousKaiju)
@@ -54,8 +57,9 @@ public class KaijuFocus : MonoBehaviour
                     bMenu.Clicked();
                     bMenu.Flip();
                 }
+
                 previousKaiju = focusedKaiju;
-                for (int i = 0; i < buttons.Count; i ++)
+                for (int i = 0; i < buttons.Count; i++)
                 {
                     buttons[i].SetActive(true);
                 }
@@ -63,20 +67,21 @@ public class KaijuFocus : MonoBehaviour
                 kaijuNameInputField.text = focusedKaiju.name;
             }
         }
-       
+
         if (focusedKaiju == null && previousKaiju != null)
         {
-            for (int i = 0; i < buttons.Count; i ++)
+            for (int i = 0; i < buttons.Count; i++)
             {
                 buttons[i].SetActive(false);
             }
+
             if (bMenu.anim.GetBool("clickedBottom"))
             {
                 bMenu.Clicked();
                 bMenu.Flip();
             }
+
             previousKaiju = null;
         }
-        
     }
 }

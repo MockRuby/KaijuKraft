@@ -8,6 +8,10 @@ public class KaijuStats : MonoBehaviour
 {
 
     public KaijuFocus focused;
+
+    public bool inSpawn;
+
+    public int spawn = 4;
     // Stats for the Kaiju
     public int health; // Health points of the Kaiju
     public float currentHealth;

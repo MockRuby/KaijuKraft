@@ -164,6 +164,11 @@ public class KaijuTraitLibrary : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
+    private void Start()
+    {
+        SavingKaiju.instance.LoadSeedData();
+    }
+
     public void KaijuGenePick()
     {
         switch (newKaijuRarityID)
